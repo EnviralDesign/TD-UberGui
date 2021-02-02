@@ -1,0 +1,303 @@
+<!-- THIS IS UBERGUI ATTRIBUTE EDITOR -->
+
+<!DOCTYPE html>
+<html lang="" id="html_master">
+<head>
+<title>Par:INIT,X:0,Y:0</title>
+<meta charset="UTF-8">
+<style>
+
+:root {
+  --hover-transition-time: 0.1s; /*var(--hover-transition-time);*/
+  /*--parameter-row-height: ;*/
+}
+
+
+html, body {
+  background-color: rgba(|+|Containerbgcolor|+|);
+  margin: 0pt;
+  user-select: none;
+}
+
+
+.debug {
+  color: rgb(255,255,255);
+  background-color: rgba(0,0,0,.5);
+  position: fixed;
+  top: 0pt;
+  pointer-events: none;
+  width: 100%;
+  z-index: 50;
+  opacity: 0.0;
+}
+
+
+.blankit {
+  background-color: rgba(|+|Containerbgcolor|+|);
+  position: fixed;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: |+|Scrollbarwidth|+|px;
+  background: rgb(|+|Scrollbgbarcolor|+|);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(|+|Scrollbarcolor|+|);
+}
+
+
+.spacer_section {
+  width: 100%;
+  height: |+|Sectionmargin|+|px;
+}
+.spacer_header {
+  width: 100%;
+  height: |+|Lastparametermargin|+|px;
+}
+
+
+.header_container {
+  font-family: "|+|Headerfont|+|";
+  font-size: |+|Headerfontsize|+|pt;
+  font-weight: |+|Headerfontstyle|+|;
+  margin-bottom: 2px;
+  margin-right: |+|Headersidemargins|+|px;
+  margin-left: |+|Headersidemargins|+|px;
+  height: ||+|Headerrowheight|+|px;
+  background-color: rgb(|+|Headercolor|+|);
+  color: rgb(|+|Headertextcolor|+|);
+  text-align: center;
+  vertical-align: middle;
+  line-height: |+|Headerrowheight|+|px;
+  border-radius: |+|Headercornerradius|+|px;
+}
+
+.widget_container {
+  height: |+|Parameterrowheight|+|px;
+  display: flex;
+  margin-right: |+|Parametersidemargins|+|px;
+  margin-left: |+|Parametersidemargins|+|px;
+  margin-bottom: |+|Allparametermargin|+|px;
+}
+
+
+.widget_label {
+  font-family: "|+|Parameterfont|+|";
+  font-size: |+|Parameterfontsize|+|pt;
+  font-weight: |+|Parameterfontstyle|+|;
+  color: rgb(|+|Parametertextcolor|+|);
+  text-align: right;
+  padding-right: 4pt;
+  padding-left: 4pt;
+  line-height: |+|Parameterrowheight|+|px;
+  margin-right: |+|Middlemargins|+|px;
+  height: 100%;
+  width: 50%;
+  background-color: rgb(|+|Labelbgcolor|+|);
+  box-sizing: border-box;
+  transition: var(--hover-transition-time);
+  border-top-left-radius: |+|Parametercornerradius|+|px;
+  border-bottom-left-radius: |+|Parametercornerradius|+|px;
+}
+
+
+.widget_tooltip {
+  font-family: "|+|Parameterfont|+|";
+  font-size: 8pt;
+  color: rgb(|+|Minortextcolor|+|);
+  opacity: 0;
+  text-align: center;
+  line-height: |+|Parameterrowheight|+|px;
+  width: 15px;
+  transition: var(--hover-transition-time);
+  position: absolute;
+  z-index: 15;
+}
+
+.widget_container:hover .widget_tooltip {
+  opacity: 1;
+}
+
+.widget_tooltip:hover {
+  font-size: 14pt;
+  background-color: rgb(|+|Primaryhovercolor|+|); */
+}
+
+.widget_label:hover {
+background-color: rgb(|+|Primaryhovercolor|+|);
+}
+
+.widget_label:active {
+background-color: rgb(|+|Primaryinteractcolor|+|);
+}
+
+.widget_body {
+  margin: 0pt;
+  padding: 0pt;
+  height: 100%;
+  width: 50%;
+  display: flex;
+}
+
+.widget_item {
+  width: 100%;
+  background-color: rgb(|+|Parameterbgcolor|+|);
+  border-width:0pt;
+  overflow: hidden;
+  position:relative;
+  transition: var(--hover-transition-time);
+  border-top-right-radius: |+|Parametercornerradius|+|px;
+  border-bottom-right-radius: |+|Parametercornerradius|+|px;
+}
+
+.widget_ItemChooser {
+  font-family: "|+|Parameterfont|+|";
+  font-size: |+|Parameterfontsize|+|pt;
+  color: rgb(|+|Parametertextcolor|+|);
+  text-align: center;
+  line-height: |+|Parameterrowheight|+|px;
+  padding: 0pt;
+  height: 100%;
+  flex: 0 0 20px;
+  background-color: rgb(|+|Parameterbgcolor|+|);
+  box-sizing: border-box;
+  border-width:0pt;
+  border-style: solid;
+  border-color: rgb(153,77,0);
+  overflow: hidden;
+  position:relative;
+  margin-left: |+|Allparametermargin|+|pt;
+  margin-right: 0pt;
+  transition: var(--hover-transition-time);
+  border-radius: |+|Parametercornerradius|+|px;
+}
+
+.widget_ItemChooser:hover {
+  background-color: rgb(|+|Primaryhovercolor|+|);
+}
+
+.widget_ItemChooser:active {
+  background-color: rgb(|+|Primaryinteractcolor|+|);
+}
+
+.widget_item:hover {
+  background-color: rgb(|+|Primaryhovercolor|+|);
+}
+
+.widget_item:active {
+  background-color: rgb(|+|Primaryinteractcolor|+|);
+}
+
+.widget_item:last-child {
+  margin-right: 0pt;
+}
+
+.widget_text {
+  font-family: "|+|Parameterfont|+|";
+  font-size: |+|Parameterfontsize|+|pt;
+  font-weight: |+|Parameterfontstyle|+|;
+  color: rgb(|+|Parametertextcolor|+|);
+  text-align: left;
+  line-height: |+|Parameterrowheight|+|px;
+  margin: 0pt;
+  padding-right: 4pt;
+  padding-left: 4pt;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  margin-right: 2px;
+  position: absolute;
+  z-index: 15;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+
+.widget_slider {
+  box-sizing: border-box;
+  height: 100%;
+  background-color: rgb(|+|Parameterslidercolor|+|);
+  border-right-width: |+|Slideraccentwidth|+|px;
+  border-right-style: solid;
+  border-right-color: rgb(|+|Accentcolor|+|);
+  position: absolute;
+  pointer-events: none;
+}
+
+.widget_item:hover .widget_slider {
+  background-color: rgb(|+|Primaryhovercolor|+|);
+  border-right-color: rgb(|+|Accenthovercolor|+|);
+  }
+
+.widget_item:active .widget_slider {
+  background-color: rgb(|+|Primaryinteractcolor|+|);
+  border-right-color: rgb(|+|Accentinteractcolor|+|);
+  }
+
+
+
+.overlay_wrap {
+  opacity:.0;
+  height: 100%;
+  width: 100%;
+  position: fixed; 
+  top: 0;
+  left: 0;
+  z-index: -99;
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+.overlay_l {
+  background-color: rgb(32,0,0);
+  /*position: fixed; */
+  opacity: 0.0;
+  height: 100%;
+  z-index: 10;
+}
+
+
+.overlay_r {
+  background-color: rgb(0,32,0);
+  /*position: fixed; */
+  opacity: 0.0;
+  height: 100%;
+  z-index: 10;
+}
+
+
+.overlay_rr {
+  background-color: rgb(0,0,64);
+  /*position: fixed; */
+  opacity: 0.0;
+  height: 100%;
+  z-index: 10;
+}
+
+
+.darkener {
+  background-color: rgb(0,0,0);
+  opacity: 0.0;
+  height: 100%;
+  width: 100%;
+  z-index: 15;
+  position: absolute;
+  pointer-events: none;
+}
+
+
+</style>
+</head>
+<body>
+
+
+
+
