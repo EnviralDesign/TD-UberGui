@@ -42,6 +42,7 @@ You can adjust the value of any type of numerical parameter just dragging left a
 
 ### Manual Entry via Field
 **Double clicking** on any field will launch an editable field that you can type values into. Most parameters have this ability, but some do not (*like the Menu parameter*).
+
 ![ubergui field entry1](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldsEntry1.gif)
 
 You may also **tab to next** for quick entry of several values either in a parameter tuple row or simply down the line. Each tab press will launch a field in the next parameter, if it supports a field.
