@@ -48,28 +48,35 @@ You may also **tab to next** for quick entry of several values either in a param
 ![ubergui field entry1](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_tabThrough.gif)
 
 You can also **left click on any label**, to automatically enter field entry mode for it's parameter (*if supported*).
+
 ![ubergui field entry 2](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldsEntry2.gif)
 
 You can also type in **valid python expressions** (*in TD math is imported by default for us*).
 These will not be set to the TD expression mode of the parameter, it will simply be evaluated when set.
+
 ![ubergui field entry expr](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldsEntryExpr.gif)
 
 You are able to **evaluate** expressions using many of the **common measurement units** as well (*the assumed default unit cm*).
+
 ![ubergui field entry expr](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldsEntryUnits.gif)
 
 ### Scroll Wheel
 Depending on where your mouse is inside the UI, the scroll wheel will perform one of two functions generally.
 
 When **scrolling inside a parameter** slider on the right half of the UI, it will **adjust the parameter** value in increments ( **ctrl** *and* **shift** *will scale the increments accordingly* )
+
 ![ubergui slider scroll](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_scrollSlider.gif)
 
 When **scrolling on the left side** of the UI, this will **scroll vertically** through your UI if there is a scroll bar.
+
 ![ubergui slider scroll down](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_scrolldown.gif)
 
 ### Parameter Reset
 **Right Clicking** on any parameter label will **reset the value** to it's TD parameter set default.
+
 ![ubergui slider scroll down](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_rightclick_reset.gif)
 
 ### Auxiliary UI
 **Menu and Color parameters** have special auxiliary UI that will launch over top of UberGui to make it easier to choose a value. You'll see the **triple dot icon** to the right when this is the case. (*file and folder parameters use this icon as well, but they simply launch TouchDesigner's built in picker.*)
+
 ![ubergui aux ui](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_aux_ui.gif)
