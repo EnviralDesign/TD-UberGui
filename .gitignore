@@ -30,10 +30,11 @@ $RECYCLE.BIN/
 .td
 .tmp
 *_Log.txt
-Backup
 
 # td auto generated folders for imported assets
 TDImportCache
+Backup
+UberGui_V4_Release.[0-9]*.toe
 
 # Windows shortcuts
 *.lnk
