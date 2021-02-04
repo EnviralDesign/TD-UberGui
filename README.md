@@ -15,7 +15,7 @@ Additionally, UberGui is built as a layer of abstraction directly on top of Cust
 ### Speed
 UberGui uses the webRender TOP in TD which runs a separate threaded instance of an embedded chromium browser. You can spawn many UI's and each will run independently of the main TouchDesigner TOE. Keeping your UI's from bogging down your real-time projects.
 
-The gif below was captured at 60 fps in TouchDesigner with no dips with a resting cook time of 1ms. Sometimes during interaction with the UI, cumulative cook time can peak to 2 or 3 ms, but rarely higher.
+The gif below was a stress test captured at 60 fps in TouchDesigner with no dips at an average cook time of 1ms. Sometimes during interaction with the UI, cumulative cook time can peak to 2 or 3 ms, but rarely higher. When parameters are not changing, cooktime is minimal, ~0.025 ms per frame. UberGui can be entirely disabled when not in use as well and quickly re enabled.
 
 ![ubergui speed](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_header2.gif)
 
