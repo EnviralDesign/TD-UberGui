@@ -84,4 +84,10 @@ When **scrolling on the left side** of the UI, this will **scroll vertically** t
 
 ![ubergui aux ui](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_aux_ui.gif)
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=RP8EJAHSDTZ86)
+## Support this work
+
+[![Donate](https://www.geopix.io/wp-content/uploads/2021/02/paypal.png)](https://www.paypal.com/donate?hosted_button_id=RP8EJAHSDTZ86)
+[![Donate](https://www.geopix.io/wp-content/uploads/2021/02/patron2.png)](https://www.patreon.com/EnviralDesign)
+
+
+
