@@ -38,6 +38,7 @@ The fastest way to get going is to just download the Tox file in this repo, and 
 
 ### Adjusting Values via Sliders
 You can adjust the value of any type of numerical parameter just dragging left and right. The min/max ranges of the parameter will determine the range. Menu parameters can also be treated like a slider.
+
 ![ubergui slider adjustment](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_sliders1-1.gif)
 
 ### Manual Entry via Field
@@ -46,6 +47,7 @@ You can adjust the value of any type of numerical parameter just dragging left a
 ![ubergui field entry1](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldsEntry1.gif)
 
 You may also **tab to next** for quick entry of several values either in a parameter tuple row or simply down the line. Each tab press will launch a field in the next parameter, if it supports a field.
+
 ![ubergui field entry1](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_tabThrough.gif)
 
 You can also **left click on any label**, to automatically enter field entry mode for it's parameter (*if supported*).
