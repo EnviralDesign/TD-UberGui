@@ -83,3 +83,5 @@ When **scrolling on the left side** of the UI, this will **scroll vertically** t
 **Menu and Color parameters** have special auxiliary UI that will launch over top of UberGui to make it easier to choose a value. You'll see the **triple dot icon** to the right when this is the case. (*file and folder parameters use this icon as well, but they simply launch TouchDesigner's built in picker.*)
 
 ![ubergui aux ui](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_aux_ui.gif)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=RP8EJAHSDTZ86)
