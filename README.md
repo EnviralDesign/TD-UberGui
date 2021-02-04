@@ -93,9 +93,10 @@ This is also where you'd specify special functionality for certain types of para
 ![ubergui tooltips](https://www.geopix.io/wp-content/uploads/2021/02/Uberguiconfigoverride_dat-e1612474638287.png)
 
 
-
 ---
 ## Support this work
+
+If you find value in this sort of thing, help me dedicating time to making open source code.
 
 [![Donate](https://www.geopix.io/wp-content/uploads/2021/02/paypal.png)](https://www.paypal.com/donate?hosted_button_id=RP8EJAHSDTZ86)
 [![Donate](https://www.geopix.io/wp-content/uploads/2021/02/patron2.png)](https://www.patreon.com/EnviralDesign)
