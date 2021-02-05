@@ -8,7 +8,7 @@
 <style>
 
 :root {
-  --hover-transition-time: 0.1s; /*var(--hover-transition-time);*/
+  --hover-transition-time: 0.1s;
   /*--parameter-row-height: ;*/
 }
 
@@ -129,7 +129,7 @@ html, body {
 
 .widget_tooltip:hover {
   font-size: 14pt;
-  background-color: rgb(|+|Primaryhovercolor|+|); */
+  background-color: rgb(|+|Primaryhovercolor|+|);
 }
 
 .widget_label:hover {
