@@ -43,14 +43,17 @@ class field:
 		parent.field.par.x = LEFT
 		parent.field.par.y = parent.Widget.height - BOTTOM
 
-		# get the par we're trying to set, on the first object in our target objects list.
+		# get the current par if it's object exists.
 		currentPar = getattr( op(OPS[0]).par , PAR ) if op(OPS[0]) != None else None
-		
 
+		# find out if the par exists, by trying to retrieve the valid attribute.
+		doesParExist = getattr( currentPar , 'valid' , False )
+		
 		# this if/else logic block handles various edge cases for interpreting how to initialize
 		# the value that already exists in the par. IE rounding long floats, or making sure ints look like ints, etc.
-		if currentPar != None:
-		
+		if doesParExist != None:
+			
+			
 			currentVal = currentPar.val
 			currentStyle = currentPar.style
 			
@@ -65,7 +68,7 @@ class field:
 			elif currentStyle in [ 'Int' ]:
 				currentVal = int(currentVal)
 			
-			elif currentStyle in [ 'Str' ]:
+			elif currentStyle in [ 'Str' , 'CHOP' , 'COMP' , 'DAT' , 'MAT' , 'panelCOMP' , 'SOP' , 'TOP' , 'Python' ]:
 				currentVal = currentVal
 				
 			else:
