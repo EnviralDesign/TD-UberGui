@@ -11,6 +11,7 @@ class UG4:
 		self.srcOpDat = op('null_srcOp')
 		self.dstOpsDat = op('null_dstOps')
 		self.tupleLookup = op('null_tupleLookup')
+		self.publicLookup = op('null_public')
 
 		self.uvLselect = op('null_uv_lselect')
 		
@@ -32,7 +33,8 @@ class UG4:
 			
 			uberGuiOverrideDat = SRC.op('Uberguiconfigoverride')
 			
-			parTuplets = [ x for x in SRC.customTuplets if x[0].enable == True and x[0].page.name.isupper() ]
+			publicPageNames = self.publicLookup.row(1)[0].val.split(',')
+			parTuplets = [ x for x in SRC.customTuplets if x[0].enable == True and x[0].page.name in publicPageNames ]
 			
 			FirstHeader = 1
 			
