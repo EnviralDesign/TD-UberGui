@@ -53,7 +53,6 @@ class field:
 		# the value that already exists in the par. IE rounding long floats, or making sure ints look like ints, etc.
 		if doesParExist != None:
 			
-			
 			currentVal = currentPar.val
 			currentStyle = currentPar.style
 			
@@ -68,7 +67,7 @@ class field:
 			elif currentStyle in [ 'Int' ]:
 				currentVal = int(currentVal)
 			
-			elif currentStyle in [ 'Str' , 'CHOP' , 'COMP' , 'DAT' , 'MAT' , 'panelCOMP' , 'SOP' , 'TOP' , 'Python' ]:
+			elif currentStyle in [ 'Str' , 'CHOP' , 'COMP' , 'DAT' , 'MAT' , 'PanelCOMP' , 'SOP' , 'TOP' , 'Python' , 'OP' , 'Folder' , 'File' , 'OBJ' ]:
 				currentVal = currentVal
 				
 			else:

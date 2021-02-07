@@ -101,7 +101,7 @@ html, body {
   line-height: |+|Parameterrowheight|+|px;
   margin-right: |+|Middlemargins|+|px;
   height: 100%;
-  width: 50%;
+  width: |+|Labelvaluesplit|+|%;
   background-color: rgb(|+|Labelbgcolor|+|);
   box-sizing: border-box;
   transition: var(--hover-transition-time);
@@ -144,7 +144,7 @@ background-color: rgb(|+|Primaryinteractcolor|+|);
   margin: 0pt;
   padding: 0pt;
   height: 100%;
-  width: 50%;
+  width: |+|Labelvaluesplitinverse|+|%;
   display: flex;
 }
 
@@ -167,7 +167,7 @@ background-color: rgb(|+|Primaryinteractcolor|+|);
   line-height: |+|Parameterrowheight|+|px;
   padding: 0pt;
   height: 100%;
-  flex: 0 0 20px;
+  flex: 0 0 |+|Parameterrowheight|+|px;
   background-color: rgb(|+|Parameterbgcolor|+|);
   box-sizing: border-box;
   border-width:0pt;

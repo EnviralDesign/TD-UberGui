@@ -18,13 +18,16 @@ function Update_ ( jsonStr ) {
 		{
 			val = Math.round( parseFloat(val)*100 ) / 100;
 		}
-		
+
 		var textEl = document.getElementById( id + '_t' );
 		textEl.innerHTML = val;
 		var width = textEl.offsetWidth;
 		
 		var slideEl = document.getElementById( id + '_s' );
-		slideEl.style.width = (slide*100)+'%';
+
+		// document.getElementById( "debug" ).innerHTML = clamp(slide*100 , 0.0 , 100.0);
+
+		slideEl.style.width = clamp(slide*100 , 0.0 , 100.0)+'%';
 		
 		
 	};
@@ -120,6 +123,8 @@ function Mouse_( jsonStr ) {
 	var x = jsonObj['x'];
 	var y = jsonObj['y'];
 	var argPar = jsonObj['par'];
+
+	// document.getElementById( "debug" ).innerHTML = argPar;
 	
 	var isScrollHover = 0;
 	if (x > document.body.clientWidth){
@@ -180,7 +185,7 @@ function Mouse_( jsonStr ) {
 				}
 			}
 			else if ( Last_Par_Id == Current_Par_Id ) {
-				document.getElementById( "debug" ).innerHTML = deepestElement.parentNode.parentNode.nextElementSibling.className;
+				// document.getElementById( "debug" ).innerHTML = deepestElement.parentNode.parentNode.nextElementSibling.className;
 				if ( deepestElement.parentNode.parentNode.nextElementSibling.className == "spacer_section" ){
 					Next_Par_Id = deepestElement.parentNode.parentNode.nextElementSibling.nextElementSibling.children[2].firstElementChild.id;
 				}
