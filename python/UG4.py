@@ -707,10 +707,11 @@ class UG4:
 		return
 
 
-	def Interact_LeftClick_Up( self ):
+	def Interact_LeftClick_Up( self , asMouse=True):
 		'''
 		# Most of the work is done, but the up click still has some logic stuffs that needs to happen.
 		'''
+
 		# Get the html title, which contains the 'WebRenderPick' custom data.
 		pikStr = self.webInfo['title',1].val
 		pikDict = self.ParseTitle(pikStr)
@@ -769,8 +770,9 @@ class UG4:
 							initParName = matchingCells[0]
 							
 							# Launch the field.
-							op('field').Launch( dstOps , initParName , left , right , bottom , top )
-							parent.Widget.Mouse( self.webRenderTop , x=0 , y=0 , targetPar=initParName2 )
+							if asMouse == True:
+								op('field').Launch( dstOps , initParName , left , right , bottom , top )
+								parent.Widget.Mouse( self.webRenderTop , x=0 , y=0 , targetPar=initParName2 )
 					
 					# If user finished a left click on a tooltip... do nothing (for now). place holder for later
 					elif initParName.endswith('_tt'):
