@@ -49,7 +49,7 @@ class UG4:
 						HTML += "<div class='spacer_header' id='_spacer_' ></div>\n\n"
 					FirstHeader = 0
 					
-					HTML += "<div class='header_container'>%s</div>\n\n"%(PAGE)
+					HTML += "<div class='header_container' id='%s_p'>%s</div>\n\n"%(PAGE,PAGE)
 				
 				# Get name of tuplet. 
 				tupletName = tuplet[0].tupletName
@@ -519,6 +519,11 @@ class UG4:
 				
 				# launch color picker.
 				op('colorpicker').Launch( dstOps , initParName , left , right , bottom , top )
+
+
+			# Edge Case #7 : nothing happens if the user dbl clicks on a page header.
+			elif initParName.endswith('_p'):
+				pass
 			
 			# Edge Case #7 : Everything else IE. widget parameter sliders!
 			else: # is a widget.
@@ -585,11 +590,10 @@ class UG4:
 							# just invert the buttons state on this down click.
 							thisPar.val = 1 - thisPar.eval()
 				
-				# if the parameter style is a pulse param, there is no state, but we still want to enable the DragOverlay mask.
-				# so we're not dragging/affecting other params accidentally during a rushed drag/click.
+				# if the parameter style is a pulse param, there is no state, so no drag overlay..
 				elif style in [ 'Pulse'  ]:
 					
-					self.Set_DragOverlay( self.webRenderTop , 1 , initParName )
+					# self.Set_DragOverlay( self.webRenderTop , 1 , initParName )
 					for thisPar in foundPars:
 						if thisPar != ":PAR_ERR:":
 							
@@ -639,6 +643,10 @@ class UG4:
 			# if user is dragging over a tooltip, that is fine. we just want the prefix.
 			elif initParName.endswith('_tt'):
 				initParName = initParName.replace('_tt', '')
+
+			# nothing happens if the user dbl clicks on a page header.
+			elif initParName.endswith('_p'):
+				pass
 			
 			# else, assume user is dragging over the parameter slider.
 			else:
@@ -777,6 +785,10 @@ class UG4:
 					# If user finished a left click on a tooltip... do nothing (for now). place holder for later
 					elif initParName.endswith('_tt'):
 						pass
+
+					# nothing happens if the user dbl clicks on a page header.
+					elif initParName.endswith('_p'):
+						pass
 					
 					# If user finished a left click on anything else...
 					else:
@@ -849,6 +861,10 @@ class UG4:
 							InitVals += [ foundParam.eval() ]
 							foundParam.val = foundParam.default
 							InitPars += [ foundParam ]
+
+			# nothing happens if the user dbl clicks on a page header.
+			elif initParName.endswith('_p'):
+				pass
 		
 		# store init pars and vals
 		self.ownerComp.store('InitPars', InitPars)
@@ -975,7 +991,11 @@ class UG4:
 					
 					# chop off suffix, and keep prefix
 					initParName = initParName.replace('_l', '')
-					
+
+				# nothing happens if the user dbl clicks on a page header.
+				elif initParName.endswith('_p'):
+					pass
+						
 				# if user scrolled on an actual paramter slider, proceed.
 				else:
 					
@@ -1132,6 +1152,10 @@ class UG4:
 
 		# nothing happens if the user dbl clicks on a tooltip.
 		elif initParName.endswith('_tt'):
+			pass
+
+		# nothing happens if the user dbl clicks on a page header.
+		elif initParName.endswith('_p'):
 			pass
 
 		# this is a troubleshooting branch. this message shouldn't happen, but if it does indicates where the problem lies.

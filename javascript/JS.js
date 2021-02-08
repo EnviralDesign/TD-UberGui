@@ -149,6 +149,8 @@ function Mouse_( jsonStr ) {
 		var Current_Par_Id = deepestElement.id;
 		var deepestElement_class = deepestElement.className;
 		var elementCS = getComputedStyle(deepestElement);
+
+		// document.getElementById( "debug" ).innerHTML = Current_Par_Id;
 		
 		var Next_Par_Id = "";
 
