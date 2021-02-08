@@ -365,14 +365,14 @@ class UG4:
 			pass
 
 
-	def Mouse(self , webRenderTop , x=0, y=0 , targetPar='' ):
+	def Mouse(self , webRenderTop , x=0, y=0 , targetPar='' , mouse=False ):
 		
 		argDict = {'x':x, 'y':y , 'par':targetPar}
 		jsonArgsList = json.dumps(argDict).replace("'", '"')
 
 		script = "Mouse_('{0}')".format(jsonArgsList)
 		webRenderTop.executeJavaScript(script)
-		webRenderTop.interactMouse( x , parent.Widget.height-y , pixels=True )
+		webRenderTop.interactMouse( x , parent.Widget.height-y , pixels=True , left=mouse )
 
 
 	def Interact_LeftClick_Down( self ):
@@ -895,7 +895,7 @@ class UG4:
 		y = int( self.ownerComp.height - int(v * self.ownerComp.height) )
 
 		# send the mouse position, and last initialized par name to Mouse function.
-		parent.Widget.Mouse( self.webRenderTop, x , y , forcedParName )
+		parent.Widget.Mouse( self.webRenderTop, x , y , forcedParName , select )
 
 
 
