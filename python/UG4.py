@@ -950,7 +950,8 @@ class UG4:
 		if ScrollContext == 'scroll':
 			
 			if action == 'down':
-				pass
+				self.Interact_Hover( 0 , u , v )
+				# pass
 			
 			if action == 'while':
 				pass
@@ -968,14 +969,14 @@ class UG4:
 				self.ownerComp.Interact_Hover( 0 , u , v )
 				self.delayedLeftClickDown.run(delayFrames=1)
 				self.delayedDoubleClick.run(delayFrames=2)
-				pass
+				# pass
 			
 			if action == 'while':
 				pass
 
 			elif action == 'up':
 				self.delayedLeftClickUp.run(delayFrames=1)
-				pass
+				# pass
 
 		# RIGHT
 		elif ScrollContext == 'scrollbar':
