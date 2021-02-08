@@ -1,4 +1,5 @@
 import json
+import traceback
 
 class UG4:
 
@@ -12,8 +13,14 @@ class UG4:
 		self.dstOpsDat = op('null_dstOps')
 		self.tupleLookup = op('null_tupleLookup')
 		self.publicLookup = op('null_public')
-
+		self.delayedDoubleClick = op('delayed_double_click')
+		self.delayedLeftClickDown = op('delayed_left_click_down')
+		self.delayedLeftClickUp = op('delayed_left_click_up')
 		self.uvLselect = op('null_uv_lselect')
+
+		self.fieldCOMP = op('field')
+		self.menuCOMP = op('menu')
+		self.colorpickerCOMP = op('colorpicker')
 		
 		
 	def Regenerate(self, SRC ):
@@ -372,7 +379,7 @@ class UG4:
 
 		script = "Mouse_('{0}')".format(jsonArgsList)
 		webRenderTop.executeJavaScript(script)
-		webRenderTop.interactMouse( x , parent.Widget.height-y , pixels=True , left=mouse )
+		webRenderTop.interactMouse( x , self.ownerComp.height-y , pixels=True , left=mouse )
 
 
 	def Interact_LeftClick_Down( self ):
@@ -495,7 +502,7 @@ class UG4:
 				initParName = initParName.replace('_mp','')
 				
 				# get some dimensions of our UI, so we can intelligently overlay our menu picker!
-				left = self.ownerComp.width/2
+				left = (self.ownerComp.par.Labelvaluesplit.eval() * ( (self.ownerComp.width-self.ownerComp.par.Scrollbarwidth.eval()) / self.ownerComp.width )) * self.ownerComp.width
 				right = float( pikDict["right"] )
 				top = float( pikDict["top"] )
 				bottom = float( pikDict["bottom"] )
@@ -511,7 +518,7 @@ class UG4:
 				initParName = initParName.replace('_cp','')
 				
 				# get some dimensions of our UI, so we can intelligently overlay our color picker!
-				left = self.ownerComp.width/2
+				left = (self.ownerComp.par.Labelvaluesplit.eval() * ( (self.ownerComp.width-self.ownerComp.par.Scrollbarwidth.eval()) / self.ownerComp.width )) * self.ownerComp.width
 				right = float( pikDict["right"] )
 				top = float( pikDict["top"] )
 				bottom = float( pikDict["bottom"] )
@@ -573,11 +580,10 @@ class UG4:
 				self.ownerComp.store("style" , style)
 				self.ownerComp.store("menunames" , menunames)
 				self.ownerComp.store("initParNAME" , initParName)
-				# self.ownerComp.store("initParVAL" , initParValue)
-				# print(initParName)
 				
 				# if the parameter style is one that can have a slider graphic, we need to set our DragOverlay to mask our active parameter.
 				if style in [ 'Float' , 'RGB' , 'RGBA' , 'UV' , 'UVW' , 'XY' , 'XYZ' , 'WH' , 'Int' , 'Menu' , 'StrMenu' ]:
+					# print('ddfgfj',initParName)
 					self.Set_DragOverlay( self.webRenderTop , 1 , initParName )
 				
 				# if the parameter style is one that is a button like par, that can have a state, we also want to enable the DragOverlay mask,
@@ -609,7 +615,7 @@ class UG4:
 		Now that we have done the hard work and stored some initial values, we can deal 
 		with our user's dragging actions performed while the left mouse button is pressed down.
 		'''
-
+		# return
 		# Get the html title, which contains the 'WebRenderPick' custom data.
 		pikStr = self.webInfo['title',1].val
 		pikDict = self.ParseTitle(pikStr)
@@ -635,6 +641,8 @@ class UG4:
 			uDistAbs = abs(uDist)
 			vDistAbs = abs(vDist)
 			hasUserDraggedMouse = max(uDistAbs,vDistAbs) != 0
+
+			# print(hasUserDraggedMouse)
 
 			# if user is dragging over a label, that is fine. we just want the prefix.
 			if initParName.endswith('_l'):
@@ -780,7 +788,7 @@ class UG4:
 							# Launch the field.
 							if asMouse == True:
 								op('field').Launch( dstOps , initParName , left , right , bottom , top )
-								parent.Widget.Mouse( self.webRenderTop , x=0 , y=0 , targetPar=initParName2 )
+								self.ownerComp.Mouse( self.webRenderTop , x=0 , y=0 , targetPar=initParName2 )
 					
 					# If user finished a left click on a tooltip... do nothing (for now). place holder for later
 					elif initParName.endswith('_tt'):
@@ -797,9 +805,7 @@ class UG4:
 						# momentary buttons are unique in this way, easier to make a special catch here than
 						# to change the logic more generally.
 						if style in [ 'Momentary' , ]:
-							# par = me.fetch("initPar" , ":PAR_ERR:")
 							if par != ":PAR_ERR:":
-								# print(par)
 								par.val = 0
 
 						# if the user finshed the left click for a Pulse, we can now call our param change script.
@@ -888,6 +894,100 @@ class UG4:
 
 		return
 
+	def Interact_Touch_Drag( self , action , v_displacement , u , v ):
+		'''
+		Wrapper Interaction function for touch screen wackyness.
+		action = ['down','while','up']
+		v_displacement = instantaneous amount to move scroll wheel by.
+		'''
+		ScrollContext = self.GetScrollContext()
+		self.ownerComp.Trigger_Escape()
+
+		
+
+		# LEFT
+		if ScrollContext == 'scroll':
+			Scrollratemultiplier = self.ownerComp.par.Touchscrollratemultiplier.eval()
+			wheel = v_displacement * Scrollratemultiplier
+			self.webRenderTop.interactMouse(0, 0, wheel=wheel , pixels=True)
+
+
+		# MIDDLE
+		elif ScrollContext == 'adjust':
+			
+			if action == 'while':
+				if self.ownerComp.fetch('sliderFreeze') == True:
+					self.ownerComp.Interact_LeftClick_While( u , v , inputType = 'touch' )
+
+			elif action == 'up':
+				self.delayedLeftClickUp.run(delayFrames=1)
+			
+			pass
+
+
+		# RIGHT
+		elif ScrollContext == 'scrollbar':
+			
+			# while the drag is happening.
+			if action == 'while':
+				self.ownerComp.Interact_Hover( True , u , v )
+			
+			# must "release" the mouse scroll bar drag event when done, 
+			# otherwise weird stuff happens where scroll wheel and scrollbar drag conflict.
+			elif action == 'up':
+				self.ownerComp.Mouse( self.webRenderTop, 0 , 0 , '' , False )
+
+		return
+
+	def Interact_Touch_Tap( self , action , u , v ):
+		'''
+		Wrapper Interaction function for touch screen wackyness.
+		action = ['down','while','up']
+		'''
+		ScrollContext = self.GetScrollContext()
+
+		# LEFT
+		if ScrollContext == 'scroll':
+			
+			if action == 'down':
+				pass
+			
+			if action == 'while':
+				pass
+
+			elif action == 'up':
+				self.ownerComp.Interact_Hover( 0 , u , v )
+				self.delayedLeftClickDown.run(delayFrames=1)
+				self.delayedLeftClickUp.run(delayFrames=2)
+
+		# MIDDLE
+		elif ScrollContext == 'adjust':
+			
+			if action == 'down':
+				self.ownerComp.store('sliderFreeze',False)
+				self.ownerComp.Interact_Hover( 0 , u , v )
+				self.delayedLeftClickDown.run(delayFrames=1)
+				self.delayedDoubleClick.run(delayFrames=2)
+				pass
+			
+			if action == 'while':
+				pass
+
+			elif action == 'up':
+				self.delayedLeftClickUp.run(delayFrames=1)
+				pass
+
+		# RIGHT
+		elif ScrollContext == 'scrollbar':
+			pass
+
+		return
+
+	# def Interact_Hover( self , select , u , v ):
+	# 	# calculate the X and Y position in absolute pixel values. This is what the render top wants.
+	# 	x = int(u * self.ownerComp.width)
+	# 	x = tdu.clamp(x , 0 , self.ownerComp.width)
+	# 	y = int( self.ownerComp.height - int(v * self.ownerComp.height) )
 
 
 	def Interact_Hover( self , select , u , v ):
@@ -895,23 +995,34 @@ class UG4:
 		select = state of the left select during a hover. Not used for adjusting sliders, but important for logic.
 		'''
 
-		# get u position as clamped 0-1
-		u = tdu.clamp( u , 0 , 1 )
-
-		# find out if mouse is in the right side, or left side.
-		isInRightSide = int(self.GetScrollContext() == 'adjust')
-
-		# get the initParName from the left select script dat storage.
-		initParName = self.ownerComp.fetch("initParNAME" , '')
-		forcedParName = ['',initParName][ min( select , isInRightSide) ]
-
 		# calculate the X and Y position in absolute pixel values. This is what the render top wants.
 		x = int(u * self.ownerComp.width)
 		x = tdu.clamp(x , 0 , self.ownerComp.width)
 		y = int( self.ownerComp.height - int(v * self.ownerComp.height) )
 
-		# send the mouse position, and last initialized par name to Mouse function.
-		parent.Widget.Mouse( self.webRenderTop, x , y , forcedParName , select )
+		# get u position as clamped 0-1
+		u = tdu.clamp( u , 0 , 1 )
+		initParName = self.ownerComp.fetch("initParNAME" , '')
+		ScrollContext = self.GetScrollContext()
+
+		# print(select,u,v)
+		
+		if ScrollContext == 'scrollbar':
+			# send the mouse position, and last initialized par name to Mouse function.
+			self.ownerComp.Mouse( self.webRenderTop, x , y , '' , select )
+
+		elif ScrollContext == 'adjust':
+			# get the initParName from the left select script dat storage.
+			# initParName = self.ownerComp.fetch("initParNAME" , '')
+			if select == 1:
+				forcedParName = initParName
+			else:
+				forcedParName = ''
+			self.ownerComp.Mouse( self.webRenderTop, x , y , forcedParName , select )
+
+		elif ScrollContext == 'scroll':
+			# send the mouse position, and last initialized par name to Mouse function.
+			self.ownerComp.Mouse( self.webRenderTop, x , y , '' , select )
 
 
 
@@ -924,27 +1035,26 @@ class UG4:
 		touch input, we want to separate other interactions from scrolling in a dif way.
 		'''
 
-		IS_SCROLL = self.ownerComp.GetScrollContext() == 'scroll'
-		IS_ADJUST = self.ownerComp.GetScrollContext() == 'adjust'
+		ScrollContext = self.ownerComp.GetScrollContext()
 
 		# if the user was in scroll context...
-		if IS_SCROLL == True:
+		if ScrollContext == 'scroll':
 
 			# calculate some booleans based on mouse position.
-			IsScrollableContext = int( IS_SCROLL )
 			IsInsidePanel = int(self.ownerComp.panel.inside)
 
 			 # if user provided scroll input via mouse...
 			if inputType == 'mouse':
-				CanWeScroll = min( IsScrollableContext , IsInsidePanel )
+				# CanWeScroll = IsInsidePanel
 				Scrollratemultiplier = self.ownerComp.par.Mousescrollratemultiplier.eval()
 				ExponentialScrollRateMultiplier = abs((scrollDisplace * scrollDisplace)) * self.ownerComp.par.Mousescrollacelleration.eval()
-				wheel = scrollDisplace * CanWeScroll * Scrollratemultiplier * ExponentialScrollRateMultiplier
+				wheel = scrollDisplace * IsInsidePanel * Scrollratemultiplier * ExponentialScrollRateMultiplier
 			elif inputType == 'touch':
 				Scrollratemultiplier = self.ownerComp.par.Touchscrollratemultiplier.eval()
-				wheel = scrollDisplace * IsScrollableContext * Scrollratemultiplier
+				wheel = scrollDisplace * Scrollratemultiplier
 
-
+			# op('constant1').par.value0 = wheel
+			# if wheel != 0:
 			# send interaction to the web render top - u/v doesn't matter here since all we want is a scroll comamnd.
 			self.webRenderTop.interactMouse(0, 0, wheel=wheel , pixels=asPixels)
 
@@ -952,7 +1062,7 @@ class UG4:
 		# funny thing about the mouse wheel, is if you scroll a notch, you get a non-zero value, then a zero.
 		# zero can obviously be calculated, but it's wasted cpu cycles since it doesn't do anything.
 		# this if statement only executes a scroll IF the value is one of those non-zero ones.
-		if IS_ADJUST == True and scrollDisplace != 0 and inputType == 'mouse':
+		if ScrollContext=='adjust' and scrollDisplace != 0 and inputType == 'mouse':
 			
 			# get some variables.
 			ctrl = bool(op('null_mod')['ctrl'])
@@ -1239,19 +1349,28 @@ class UG4:
 
 		return
 
+	def Trigger_Escape_If_Auxguis_Unused( self ):
+
+		if self.fieldCOMP.panel.inside == False and self.menuCOMP.panel.inside == False and self.colorpickerCOMP.panel.inside == False:
+			self.fieldCOMP.Close()
+			self.menuCOMP.Close()
+			self.colorpickerCOMP.Close()
+
+		return
+
 	def Trigger_Escape( self ):
 		'''
 		When user hits the escape key
 		'''
-		op('field').Close()
+		self.fieldCOMP.Close()
 		return
 
 	def Trigger_Enter( self ):
 		'''
 		When user hits the enter key
 		'''
-		op('field').Set()
-		op('field').Close()
+		self.fieldCOMP.Set()
+		self.fieldCOMP.Close()
 		return
 	
 		
@@ -1261,13 +1380,13 @@ class UG4:
 		DstOps = list of operator references.
 		'''
 		
-		parent.Widget.par.Inputop = srcOp
-		parent.Widget.par.Outputops = ' '.join([ x.path for x in DstOps ])
+		self.ownerComp.par.Inputop = srcOp
+		self.ownerComp.par.Outputops = ' '.join([ x.path for x in DstOps ])
 		
 	def Clear(self):
 		
-		parent.Widget.par.Inputop = ''
-		parent.Widget.par.Outputops = ''
+		self.ownerComp.par.Inputop = ''
+		self.ownerComp.par.Outputops = ''
 		
 		op('HTML').text = ''
 		
@@ -1296,7 +1415,9 @@ class UG4:
 	def IsPickingDataValid( self ):
 		pikStr = self.webInfo['title',1].val
 		pikDict = self.ParseTitle(pikStr)
-		if pikDict['Par'] == 'INIT':
+		if pikDict == None:
+			return False
+		elif pikDict['Par'] == 'INIT':
 			return False
 		else:
 			return True
@@ -1320,11 +1441,11 @@ class UG4:
 
 		# if the uVal is above ScrollbarFractional, our mouse is inside the scrollbar on the right.
 		if (uVal > ScrollbarFractional):
-			if Wheelcontext != 'scroll':
-				self.ownerComp.par.Wheelcontext = 'scroll'
+			if Wheelcontext != 'scrollbar':
+				self.ownerComp.par.Wheelcontext = 'scrollbar'
 
 		# if the above fails, we know the mouse is to the left of scrollbar. so we just check if it's right of split.
-		elif (uVal > uSplitVal):
+		elif (uVal > tdu.remap( uSplitVal , 0 , 1 , 0 , ScrollbarFractional ) ):
 			if Wheelcontext != 'adjust':
 				self.ownerComp.par.Wheelcontext = 'adjust'
 
@@ -1387,7 +1508,7 @@ class UG4:
 		
 		
 	def ParamChange(self, pars=[], prevVals=[]):
-		paramChangeDat = parent.Widget.par.Paramchangescript.eval()
+		paramChangeDat = self.ownerComp.par.Paramchangescript.eval()
 		if paramChangeDat != None:
 			paramChangeDat.run(pars,prevVals)
 		else:

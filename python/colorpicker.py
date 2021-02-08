@@ -62,4 +62,4 @@ class colorpicker:
 					
 					parent.colorpicker.store('isModified' , 1)
 					
-		parent.Widget.op('container_foreground_focus').par.display = 0
+		# parent.Widget.op('container_foreground_focus').par.display = 0

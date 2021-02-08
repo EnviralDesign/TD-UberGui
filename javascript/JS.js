@@ -25,8 +25,6 @@ function Update_ ( jsonStr ) {
 		
 		var slideEl = document.getElementById( id + '_s' );
 
-		// document.getElementById( "debug" ).innerHTML = clamp(slide*100 , 0.0 , 100.0);
-
 		slideEl.style.width = clamp(slide*100 , 0.0 , 100.0)+'%';
 		
 		
@@ -124,7 +122,7 @@ function Mouse_( jsonStr ) {
 	var y = jsonObj['y'];
 	var argPar = jsonObj['par'];
 
-	// document.getElementById( "debug" ).innerHTML = argPar;
+	// document.getElementById( "debug" ).innerHTML = x;
 	
 	var isScrollHover = 0;
 	if (x > document.body.clientWidth){
@@ -149,8 +147,6 @@ function Mouse_( jsonStr ) {
 		var Current_Par_Id = deepestElement.id;
 		var deepestElement_class = deepestElement.className;
 		var elementCS = getComputedStyle(deepestElement);
-
-		// document.getElementById( "debug" ).innerHTML = Current_Par_Id;
 		
 		var Next_Par_Id = "";
 
@@ -187,7 +183,6 @@ function Mouse_( jsonStr ) {
 				}
 			}
 			else if ( Last_Par_Id == Current_Par_Id ) {
-				// document.getElementById( "debug" ).innerHTML = deepestElement.parentNode.parentNode.nextElementSibling.className;
 				if ( deepestElement.parentNode.parentNode.nextElementSibling.className == "spacer_section" ){
 					Next_Par_Id = deepestElement.parentNode.parentNode.nextElementSibling.nextElementSibling.children[2].firstElementChild.id;
 				}

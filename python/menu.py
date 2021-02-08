@@ -18,7 +18,7 @@ class menu:
 		parent.menu.par.Ops = [ x for x in OPS ]
 		parent.menu.par.Par = PAR
 		parent.menu.par.w = RIGHT - LEFT
-		parent.menu.par.h = 100
+		parent.menu.par.h = op('row0_template').height*4.5
 		parent.menu.par.x = LEFT
 		parent.menu.par.y = max( 0 , (parent.Widget.height - BOTTOM - parent.menu.par.h) )
 		
