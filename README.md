@@ -139,7 +139,7 @@ Using a slider is simple, just drag left or right.
 
 ![ubergui touch sliders](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_sliders3.gif)
 
-To reset a parameter tuplet to it's default value(s), highlight a label, then long press to reset.
+To reset a parameter tuplet to it's default value(s), just long press on the label.
 **NOTE:** *You can change the global delay for long press in the config page of UG.*
 
 ![ubergui touch reset fields](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_tapHoldToReset.gif)
@@ -147,6 +147,7 @@ To reset a parameter tuplet to it's default value(s), highlight a label, then lo
 To enter field mode, just quickly tap any field, or tap the parameter name to the left.
 
 ![ubergui touch field entry2](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldEntry_2.gif)
+
 ![ubergui touch field entry2](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldEntry_3.gif)
 
 ---
