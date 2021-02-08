@@ -8,16 +8,20 @@
 
 Additionally, UberGui is built as a layer of abstraction directly on top of Custom Parameters, so you can use this in existing projects with little to no additional refactoring.
 
-
-
 ## Fast, Beautiful, with TouchDesigner-centric features.
 
-### Speed
-UberGui uses the webRender TOP in TD which runs a separate threaded instance of an embedded chromium browser. You can spawn many UI's and each will run independently of the main TouchDesigner TOE. Keeping your UI's from bogging down your real-time projects.
+### Performance
+UberGui uses the webRender TOP in TD which runs a separate threaded instance of an embedded chromium browser. You can spawn many UG UI's and each will run independently of the main TouchDesigner TOE. Keeping your UI's from bogging down your real-time projects.
 
-The gif below was a stress test captured at 60 fps in TouchDesigner with no dips at an average cook time of 1ms. Sometimes during interaction with the UI, cumulative cook time can peak to 2 or 3 ms, but rarely higher. When parameters are not changing, cooktime is minimal, ~0.025 ms per frame. UberGui can be entirely disabled when not in use as well and quickly re enabled.
+Both real time performance when many parameters are animated AND the speed in which a totally new ui is generated is very fast.
 
-![ubergui speed](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_header2.gif)
+![ubergui performance animated ](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_animatedPerformance.gif)
+
+![ubergui performance slider](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_sliderPerformance.gif)
+
+Resting performance is very low, just the cost of the web render TOP. **NOTE:** *You can even disable the "Enable Thread" parameter, when you want to fully shut down the cook times of UG, for example when a certain window is not open, or part of the software not visible.*
+
+![ubergui performance resting](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_resting-performance.gif)
 
 ### Aesthetic
 Since UberGui is built on html/css we have a massive array of pre existing tech and styling options to leverage to build out compelling UIs. For this tool, I've exposed many of these css styling variables to TD, through a custom parameter styles page. You can modify/expose as many others as you'd like very easily with the parameter injection find/replace method.
