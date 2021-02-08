@@ -1,3 +1,4 @@
+
 # UberGui V4
 
 <p align="center">
@@ -44,9 +45,7 @@ The fastest way to get going is to just download the Tox file in this repo, and 
 
 ### Input Mode
 
-UberGui supports operation via mouse, and via touchscreen. The default mode is mouse, however you can change the Input Mode parameter shown below to activate Touch mode. If you do this, it's usually recommended to increase the height of parameter rows, and headers so it's easier to interact with them.
-
-![ubergui input mode](https://www.geopix.io/wp-content/uploads/2021/02/touchmode.png)
+UberGui supports operation via **mouse**, and via **touchscreen**. **Switching is handled automatically** in the background, so you can switch between them seamlessly.
 
 ### Page Filtering
 
@@ -130,29 +129,25 @@ This is also where you'd specify special functionality for certain types of para
 
 ### Touch Screen support
 
-Touch Screens are supported as well, via a parameter called Input Mode, in the Config page. By default it's set to a mouse control scheme, but upon switching to Touch mode, the mouse is disabled in UG and Touch Screen controls become active.
+Touch Screens are supported as well, switching happens automatically as you use different inputs.
 
-Scrolling is easy, just drag up and down on the left side of UberGui.
+Scrolling is easy, just drag up and down on the left side of UberGui. You can also use the scrollbar in touch screen mode.
 
 ![ubergui tooltips](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_touch_scrolling.gif)
 
-When in Touch mode, you always need to single tap an element before trying to interact with it. This is because our ability to "hover" over a UI element is not possible with Touch Screen mode.
+Using a slider is simple, just drag left or right.
 
-![ubergui touch hovering](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_touch_hovering.gif)
-
-Using a slider is simple, just tap and drag left to right.
-
-![ubergui touch sliders](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_touch_sliders.gif)
+![ubergui touch sliders](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_sliders3.gif)
 
 To reset a parameter tuplet to it's default value(s), highlight a label, then long press to reset.
 **NOTE:** *You can change the global delay for long press in the config page of UG.*
 
-![ubergui touch reset fields](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_touch_resetFields.gif)
+![ubergui touch reset fields](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_tapHoldToReset.gif)
 
-To enter field mode, long press any element after highlighting it with a tap.
+To enter field mode, just quickly tap any field, or tap the parameter name to the left.
 
-![ubergui touch field entry](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_touch_fieldEntry.gif)
-
+![ubergui touch field entry2](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldEntry_2.gif)
+![ubergui touch field entry2](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldEntry_3.gif)
 
 ---
 ## Support this work
