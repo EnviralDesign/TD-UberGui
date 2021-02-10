@@ -110,6 +110,7 @@ html, body {
 }
 
 
+
 .widget_tooltip {
   font-family: "|+|Parameterfont|+|";
   font-size: 8pt;
@@ -120,11 +121,11 @@ html, body {
   width: 15px;
   transition: var(--hover-transition-time);
   position: absolute;
-  z-index: 15;
+  z-index: |+|Tooltipzindex|+|;
 }
 
 .widget_container:hover .widget_tooltip {
-  opacity: 1;
+  opacity: |+|Tooltipopacity|+|;
 }
 
 .widget_tooltip:hover {

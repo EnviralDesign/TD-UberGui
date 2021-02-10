@@ -7,9 +7,10 @@ class tooltip:
 		self.ownerComp = ownerComp
 
 	def Launch(self , BOTTOM=0 , MSG = "message goes here" ):
-		op('text_tooltip').text = MSG
-		parent.tooltip.par.display = 1
-		parent.tooltip.par.y = max( parent.Widget.height - BOTTOM - parent.tooltip.par.h , 0 )
+		if parent.Widget.par.Enabletooltips.eval():
+			op('text_tooltip').text = MSG
+			parent.tooltip.par.display = 1
+			parent.tooltip.par.y = max( parent.Widget.height - BOTTOM - parent.tooltip.par.h , 0 )
 		
 	def Close(self):
 		parent.tooltip.par.display = 0

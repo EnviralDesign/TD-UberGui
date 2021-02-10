@@ -91,6 +91,7 @@ class UG4:
 					HTML += "  <div class='widget_label' id='%s_l'>%s</div>\n"%( tupletName , tupletLabel )
 					
 				
+				# Generate the tool tip hoverable div container.
 				HTML += "    <div class='widget_tooltip' id='%s_tt'>&quest;</div>\n"%( tupletName )
 				
 				
