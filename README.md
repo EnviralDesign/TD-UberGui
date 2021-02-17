@@ -151,6 +151,17 @@ To enter field mode, just quickly tap any field, or tap the parameter name to th
 ![ubergui touch field entry2](https://www.geopix.io/wp-content/uploads/2021/02/UGV4_fieldEntry_3.gif)
 
 ---
+
+### Other Features
+
+Read only custom parameters are respected as read only as well, showing up as yellow and with no interaction possible.
+
+![ubergui read only](https://www.geopix.io/wp-content/uploads/2021/02/uberGui_ReadOnly.gif)
+
+Disabled parameters will simply be excluded from the UI all together.
+
+
+
 ## Support this work
 
 If you find value in this sort of thing, help me dedicating time to making open source code.

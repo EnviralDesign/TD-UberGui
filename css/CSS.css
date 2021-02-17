@@ -9,7 +9,7 @@
 
 :root {
   --hover-transition-time: 0.1s;
-  /*--parameter-row-height: ;*/
+  --is-read-only: 0;
 }
 
 
@@ -89,6 +89,12 @@ html, body {
   margin-bottom: |+|Allparametermargin|+|px;
 }
 
+.widget_container.readonly div {
+  font-style: italic;
+  color: rgb(|+|Minortextcolor|+|);
+  background-color: rgb(|+|Disabledparametercolor|+|);
+  --is-read-only: 1; 
+}
 
 .widget_label {
   font-family: "|+|Parameterfont|+|";

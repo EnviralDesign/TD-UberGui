@@ -63,6 +63,7 @@ class UG4:
 				tupletLabel = tuplet[0].label
 				tupletSection = tuplet[0].startSection
 				tupletStyle = tuplet[0].style
+				tupletReadOnly = tuplet[0].readOnly
 				
 				# get the custom format of the parameter, if there is any.
 				if uberGuiOverrideDat != None:
@@ -76,11 +77,13 @@ class UG4:
 				
 				isSingle = len(tuplet) == 1
 				# Generate the container for the entire widget row.
+
+				isReadOnly = ['',' readonly'][ int(tupletReadOnly) ]
 				
 				if ID >= len(parTuplets)-1: # if this is the last widget...
-					HTML += '<div class="widget_container" id="_lastWidget_">\n'
+					HTML += '<div class="widget_container%s" id="_lastWidget_">\n'%(isReadOnly)
 				else:
-					HTML += '<div class="widget_container">\n'
+					HTML += '<div class="widget_container%s">\n'%(isReadOnly)
 				
 				
 				if tupletStyle in [ 'Pulse' ]:
@@ -363,7 +366,7 @@ class UG4:
 		return
 
 	def Update(self , webRenderTop , flatArgList ):
-		
+		print(flatArgList)
 		jsonArgsList = json.dumps(flatArgList).replace("'", '"')
 		script = "Update_('{0}')".format(jsonArgsList)
 		
@@ -607,6 +610,8 @@ class UG4:
 
 							# just pulse the parameter, it's the only thing we can do with these types.
 							thisPar.pulse()
+		else:
+			self.ownerComp.unstore('*')
 		
 		return
 
@@ -1255,48 +1260,50 @@ class UG4:
 		pikStr = self.webInfo['title',1].val
 		pikDict = self.ParseTitle(pikStr)
 
-		# get the initial par name.
-		initParName = str( pikDict.get("Par","") )
+		if pikDict != None:
 
-		# nothing happens if the user dbl clicks on a label.
-		if initParName.endswith('_l'):
-			pass
+			# get the initial par name.
+			initParName = str( pikDict.get("Par","") )
 
-		# nothing happens if the user dbl clicks on a tooltip.
-		elif initParName.endswith('_tt'):
-			pass
+			# nothing happens if the user dbl clicks on a label.
+			if initParName.endswith('_l'):
+				pass
 
-		# nothing happens if the user dbl clicks on a page header.
-		elif initParName.endswith('_p'):
-			pass
+			# nothing happens if the user dbl clicks on a tooltip.
+			elif initParName.endswith('_tt'):
+				pass
 
-		# this is a troubleshooting branch. this message shouldn't happen, but if it does indicates where the problem lies.
-		elif initParName == '_dragOverlayRight_':
-			debug('Couldnt launch UI for %s'%(initParName))
+			# nothing happens if the user dbl clicks on a page header.
+			elif initParName.endswith('_p'):
+				pass
 
-		# if we're here, it's assumed the user dbl clicked on an actual parameter.
-		else:
-			
-			# if param and pik is valid...
-			if pikDict != None and initParName != "":
+			# this is a troubleshooting branch. this message shouldn't happen, but if it does indicates where the problem lies.
+			elif initParName == '_dragOverlayRight_':
+				debug('Couldnt launch UI for %s'%(initParName))
+
+			# if we're here, it's assumed the user dbl clicked on an actual parameter.
+			else:
 				
-				# get some info about the parameter user dbl clickedo n.
-				left = float( pikDict["left"] )
-				right = float( pikDict["right"] )
-				top = float( pikDict["top"] )
-				bottom = float( pikDict["bottom"] )
-				initParName = str( pikDict["Par"] )
-				style = str( self.paramInfo[initParName,'style'] )
-				
-				# only proceed if the parameter style is one that supports field entry.
-				if style not in [ 'Menu' , 'StrMenu' , 'Pulse' , 'Toggle' , 'Momentary' ]:
+				# if param and pik is valid...
+				if pikDict != None and initParName != "":
 					
-					# get all the destination objects.
-					dstOps = [ x.path for x in map(op,self.dstOpsDat.col(0)) if x != None ]
+					# get some info about the parameter user dbl clickedo n.
+					left = float( pikDict["left"] )
+					right = float( pikDict["right"] )
+					top = float( pikDict["top"] )
+					bottom = float( pikDict["bottom"] )
+					initParName = str( pikDict["Par"] )
+					style = str( self.paramInfo[initParName,'style'] )
+					
+					# only proceed if the parameter style is one that supports field entry.
+					if style not in [ 'Menu' , 'StrMenu' , 'Pulse' , 'Toggle' , 'Momentary' ]:
+						
+						# get all the destination objects.
+						dstOps = [ x.path for x in map(op,self.dstOpsDat.col(0)) if x != None ]
 
-					# if there is at least one destination object, Launch the field.
-					if len(dstOps):
-						op('field').Launch_Delayed( dstOps , initParName , left , right , bottom , top , 0 )
+						# if there is at least one destination object, Launch the field.
+						if len(dstOps):
+							op('field').Launch_Delayed( dstOps , initParName , left , right , bottom , top , 0 )
 
 		return
 

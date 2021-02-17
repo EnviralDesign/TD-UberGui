@@ -121,8 +121,6 @@ function Mouse_( jsonStr ) {
 	var x = jsonObj['x'];
 	var y = jsonObj['y'];
 	var argPar = jsonObj['par'];
-
-	// document.getElementById( "debug" ).innerHTML = x;
 	
 	var isScrollHover = 0;
 	if (x > document.body.clientWidth){
@@ -147,6 +145,10 @@ function Mouse_( jsonStr ) {
 		var Current_Par_Id = deepestElement.id;
 		var deepestElement_class = deepestElement.className;
 		var elementCS = getComputedStyle(deepestElement);
+
+		var isParReadOnly = elementCS.getPropertyValue('--is-read-only');
+
+		// document.getElementById( "debug" ).innerHTML = elementCS.getPropertyValue('--is-read-only');
 		
 		var Next_Par_Id = "";
 
@@ -257,7 +259,7 @@ function Mouse_( jsonStr ) {
 			bottom2 = rect2.bottom;
 		}
 		
-		if ( Current_Par_Id.length > 0 ) {
+		if ( Current_Par_Id.length > 0 && isParReadOnly == 0) {
 			Title = "Par:" + Current_Par_Id + ',left:' + rect.left + ',top:' + rect.top + ',right:' + rect.right + ',bottom:' + rect.bottom;
 			Title += ",Par2:" + Next_Par_Id +',left2:' + left2 + ',top2:' + top2 + ',right2:' + right2 + ',bottom2:' + bottom2;
 			Title += ',X:' + nrmX + ',Y:' + nrmY ;
