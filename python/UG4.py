@@ -366,7 +366,6 @@ class UG4:
 		return
 
 	def Update(self , webRenderTop , flatArgList ):
-		print(flatArgList)
 		jsonArgsList = json.dumps(flatArgList).replace("'", '"')
 		script = "Update_('{0}')".format(jsonArgsList)
 		
