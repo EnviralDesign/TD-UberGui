@@ -193,11 +193,16 @@ class UG4:
 								
 								
 						elif par.style in [ 'Int' ]:
-								widthPercentage = tdu.remap( val , par.min , par.max , 0 , 100 )
-								HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
-								
-								val = int(val)
-								HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
+							widthPercentage = tdu.remap( val , par.min , par.max , 0 , 100 )
+							HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
+							
+							val = int(val)
+							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
+
+
+						elif par.style in [ 'COMP' , 'CHOP' , 'DAT' , 'MAT' , 'OBJ' , 'OP' , 'PanelCOMP' , 'SOP' , 'TOP' ]:
+							val = par.val
+
 							
 						else:
 							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
@@ -296,8 +301,23 @@ class UG4:
 				value = menulabels[menuindex]
 				slide = menuindex
 			
+			
+			# Edge Case #3 : parameters that accept some kind of operator, can be specified via
+			# absolute path or relative path. however the parameter DAT returns the evaluated absolute path every time.
+			# we want to return what the user "sees" in the actual parameter. If it's blank, its blank. If it's  relative path, show that too.
+			elif style in [ 'COMP' , 'CHOP' , 'DAT' , 'MAT' , 'OBJ' , 'OP' , 'PanelCOMP' , 'SOP' , 'TOP' ]:
+				
+				parName = str(self.paramInfo[rowID,'name'])
+				evalStr = "op('%s').par.%s"%(SRC.path,parName)
+				evaledParHolder = eval("op('%s').par"%(SRC.path))
+				if hasattr( evaledParHolder , parName ):
+					value = getattr( evaledParHolder , parName ).val
+				else:
+					value = ''
 
-			# Edge Case #3 : pulse buttons don't really have states, they just trigger things instantly.
+			
+
+			# Edge Case #4 : pulse buttons don't really have states, they just trigger things instantly.
 			# So for these we want the slider to always be 0%, and the value to just be the param label.
 			# this encourages developers to name the pulse button's label something action oriented, 
 			# for instance "Open Window" or "Start Render", etc.
