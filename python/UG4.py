@@ -195,13 +195,13 @@ class UG4:
 						elif par.style in [ 'Int' ]:
 							widthPercentage = tdu.remap( val , par.min , par.max , 0 , 100 )
 							HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
-							
 							val = int(val)
 							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
 
 
 						elif par.style in [ 'COMP' , 'CHOP' , 'DAT' , 'MAT' , 'OBJ' , 'OP' , 'PanelCOMP' , 'SOP' , 'TOP' ]:
 							val = par.val
+							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
 
 							
 						else:
@@ -308,12 +308,8 @@ class UG4:
 			elif style in [ 'COMP' , 'CHOP' , 'DAT' , 'MAT' , 'OBJ' , 'OP' , 'PanelCOMP' , 'SOP' , 'TOP' ]:
 				
 				parName = str(self.paramInfo[rowID,'name'])
-				evalStr = "op('%s').par.%s"%(SRC.path,parName)
-				evaledParHolder = eval("op('%s').par"%(SRC.path))
-				if hasattr( evaledParHolder , parName ):
-					value = getattr( evaledParHolder , parName ).val
-				else:
-					value = ''
+				parConst = str(self.paramInfo[rowID,'constant'])
+				value = parConst
 
 			
 
