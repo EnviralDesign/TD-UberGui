@@ -1069,7 +1069,6 @@ class UG4:
 
 			elif action == 'up':
 				self.delayedLeftClickUp.run(delayFrames=ipar.Widget.Threaddelay+1)
-				self.delayedDoubleClick.run(delayFrames=ipar.Widget.Threaddelay+1)
 
 			elif action == 'doubleclick':
 				self.delayedDoubleClick.run(delayFrames=ipar.Widget.Threaddelay+1)
