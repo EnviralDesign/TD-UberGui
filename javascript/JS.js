@@ -77,6 +77,9 @@ function Set_DragOverlay_(depth,element) {
 	var lastWidgetRect = document.getElementById( "_lastWidget_" ).getBoundingClientRect();
 	_darkener_bot_.style.height = (lastWidgetRect.bottom - rect.bottom) + "px";
 	_darkener_bot_.style.top = rect.bottom + "px";
+
+	// const secondsSinceEpoch = Math.round(Date.now());
+	// document.getElementById( "debug" ).innerHTML = secondsSinceEpoch;
 	
 	
 };

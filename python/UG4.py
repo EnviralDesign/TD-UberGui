@@ -17,6 +17,7 @@ class UG4:
 		self.delayedLeftClickDown = op('delayed_left_click_down')
 		self.delayedLeftClickUp = op('delayed_left_click_up')
 		self.uvLselect = op('null_uv_lselect')
+		self.delayedUnblock = op('delayed_unblock')
 
 		self.fieldCOMP = op('field')
 		self.menuCOMP = op('menu')
@@ -421,12 +422,20 @@ class UG4:
 		the _While function can operate as quickly as possibly every frame down below.
 		we use node storage to store these initial values.
 		'''
+		
+		# a
+		# we need to give the chrome thread some few frames to catch up to ensure the webrender pick
+		# is returning the thing that was actually tapped/clicked. Only is needed for Touchscreen since there is no hover.
+		if ipar.Widget.Threaddelayblock == True:
+			# debug('Chrome Thread Block waiting...')
+			return
 
 		# Get the html title, which contains the 'WebRenderPick' custom data.
 		pikStr = self.webInfo['title',1].val
 		pikDict = self.ParseTitle(pikStr)
-		self.ownerComp.store("pikDict" , pikDict)
 		ipar.Widget.Pikdict = pikDict
+
+		# debug( pikDict['Par'] )
 		
 		# If the user left clicked somewhere, we can be sure the auxilary UI stuffs should be closed, if not already.
 		op('field').Close()
@@ -447,12 +456,10 @@ class UG4:
 			# we only have 1 source object feeding our UI generation, but we could be addressing
 			# the parameters of multiple objects ! get those object(s) now and store them.
 			dstOps = [ x[0].val for x in self.dstOpsDat.rows() ]
-			self.ownerComp.store("initOps" , dstOps)
 			ipar.Widget.Initops = dstOps
 			
 			# get and store a list of the values of all the parameters in our source object.
 			ValueState = list(map(str,self.paramInfo.col('value')))
-			self.ownerComp.store('ValueState' , ValueState)
 			ipar.Widget.Valuestates = ValueState
 			
 			# now that our data is prepared, lets handle our numerous edge cases. The user might
@@ -469,20 +476,16 @@ class UG4:
 				
 				# list comp convert our destination operators to a list of destimation parameters, then store it.
 				foundPars = [ getattr( op(x).par , initParName , ":PAR_ERR:" ) for x in dstOps ]
-				self.ownerComp.store("initPar" , foundPars)
 				ipar.Widget.Initpars = [ self.pickle_par(x) for x in foundPars ]
 				
 				# determine the style of the parameter, and store it.
 				style = self.paramInfo[initParName,'style']
-				self.ownerComp.store("style" , style)
 				ipar.Widget.Style = style
 			
 			# Edge Case #2 : Spacers - not much to do here.
 			elif initParName == '_spacer_': # is a spacer
 				
-				self.ownerComp.store("parCick" , 0)
 				ipar.Widget.Parclick = 0
-				self.ownerComp.store("style" , '')
 				ipar.Widget.Style = ''
 			
 			# Edge Case #3 : Tool Tip.
@@ -576,7 +579,6 @@ class UG4:
 			else: # is a widget.
 				
 				# store an indicator that we clicked an actual par, for later.
-				me.store("parCick" , 1)
 				ipar.Widget.Parclick = 1
 				
 				# if init par existed, fetch style, and normmin and normmax from the paramInfo table.
@@ -608,28 +610,19 @@ class UG4:
 				
 				# store some initial x/y position values, and our parameter list. 
 				# storing these paramters now means we don't have to re-look them up every frame during a drag. more efficient!
-				self.ownerComp.store("initX" , initX)
 				ipar.Widget.Initx = initX
-				self.ownerComp.store("initY" , initY)
 				ipar.Widget.Inity = initY
-				self.ownerComp.store("initPar" , foundPars)
 				ipar.Widget.Initpars = [ self.pickle_par(x) for x in foundPars ]
 
 				# we also need the initial value of the parameter, so we know how much relative, we've adjusted the value.
 				initVals = [each.eval() for each in foundPars]
-				self.ownerComp.store('initVal' , initVals)
 				ipar.Widget.Initvals = initVals
 				
 				# we also need some other attributes of our parameter during our drag operations, store those too.
-				self.ownerComp.store("normMin" , normMin)
 				ipar.Widget.Normmin = normMin
-				self.ownerComp.store("normMax" , normMax)
 				ipar.Widget.Normmax = normMax
-				self.ownerComp.store("style" , style)
 				ipar.Widget.Style = style
-				self.ownerComp.store("menunames" , menunames)
 				ipar.Widget.Menunames = menunames
-				self.ownerComp.store("initParNAME" , initParName)
 				ipar.Widget.Initparname = initParName
 				
 				# if the parameter style is one that can have a slider graphic, we need to set our DragOverlay to mask our active parameter.
@@ -668,7 +661,13 @@ class UG4:
 		Now that we have done the hard work and stored some initial values, we can deal 
 		with our user's dragging actions performed while the left mouse button is pressed down.
 		'''
-		# return
+
+		# we need to give the chrome thread some few frames to catch up to ensure the webrender pick
+		# is returning the thing that was actually tapped/clicked. Only is needed for Touchscreen since there is no hover.
+		if ipar.Widget.Threaddelayblock == True:
+			# debug('Chrome Thread Block waiting...')
+			return
+
 		# Get the html title, which contains the 'WebRenderPick' custom data.
 		pikStr = self.webInfo['title',1].val
 		pikDict = self.ParseTitle(pikStr)
@@ -711,7 +710,6 @@ class UG4:
 			
 			# else, assume user is dragging over the parameter slider.
 			else:
-				# pars = self.ownerComp.fetch("initPar" , [])
 				pars = [ self.unpickle_par(x) for x in ipar.Widget.Initpars.eval() ]#  if isinstance(ipar.Widget.Initpars.eval(), list) else []
 
 
@@ -725,17 +723,11 @@ class UG4:
 					if pikStr != "" and par != ":PAR_ERR:":
 						
 						# fetch a bunch of our initial data stored during down click.
-						# initX = self.ownerComp.fetch("initX" , 0)
 						initX = ipar.Widget.Initx.eval()
-						# initY = self.ownerComp.fetch("initY" , 0)
 						initY = ipar.Widget.Inity.eval()
-						# normMin = self.ownerComp.fetch("normMin" , 0)
 						normMin = ipar.Widget.Normmin.eval()
-						# normMax = self.ownerComp.fetch("normMax" , 1)
 						normMax = ipar.Widget.Normmax.eval()
-						# style = self.ownerComp.fetch("style" , '')
 						style = ipar.Widget.Style.eval()
-						# menunames = self.ownerComp.fetch("menunames" , [])
 						menunames = ipar.Widget.Menunames.eval()
 
 						# only proceed with this branch IF user has dragged mouse away from initial position.
@@ -789,18 +781,20 @@ class UG4:
 		# Most of the work is done, but the up click still has some logic stuffs that needs to happen.
 		'''
 
+		# we need to give the chrome thread some few frames to catch up to ensure the webrender pick
+		# is returning the thing that was actually tapped/clicked. Only is needed for Touchscreen since there is no hover.
+		if ipar.Widget.Threaddelayblock == True:
+			# debug('Chrome Thread Block waiting...')
+			return
+
 		# Get the html title, which contains the 'WebRenderPick' custom data.
 		pikStr = self.webInfo['title',1].val
 		pikDict = self.ParseTitle(pikStr)
 		
 		# fetch some of the things we stored on the down click.
-		# pars = self.ownerComp.fetch("initPar" , [])
 		pars = [ self.unpickle_par(x) for x in ipar.Widget.Initpars.eval() ]
-		# initVals = self.ownerComp.fetch("initVal" , [])
 		initVals = ipar.Widget.Initvals.eval()
-		# dstOps = self.ownerComp.fetch("initOps" , [])
 		dstOps = ipar.Widget.Initops.eval()
-		# ValueStateDown = self.ownerComp.fetch('ValueState',[])
 		ValueStateDown = ipar.Widget.Valuestates.eval()
 		
 		# get the current state of the parameter.
@@ -827,7 +821,6 @@ class UG4:
 					# get the current X/Y and fetch style from storage.
 					initX = float( pikDict["X"] )
 					initY = float( pikDict["Y"] )
-					# style = self.ownerComp.fetch("style" , '')
 					style = ipar.Widget.Style.eval()
 					
 					# we also want the NEXT par in line, as well as it's bounds incase user tabs.
@@ -892,10 +885,18 @@ class UG4:
 
 
 	def Interact_RightClick_Down( self ):
-		
+		'''
+		trigger a right mouse down function.
+		'''
+
+		# we need to give the chrome thread some few frames to catch up to ensure the webrender pick
+		# is returning the thing that was actually tapped/clicked. Only is needed for Touchscreen since there is no hover.
+		if ipar.Widget.Threaddelayblock == True:
+			# debug('Chrome Thread Block waiting...')
+			return
+
 		# get list of all current values and store.
 		ValueState = list(map(str,self.paramInfo.col('value')))
-		self.ownerComp.store('ValueState' , ValueState)
 		ipar.Widget.Valuestates = ValueState
 		
 		# Get the html title, which contains the 'WebRenderPick' custom data.
@@ -940,25 +941,34 @@ class UG4:
 				pass
 		
 		# store init pars and vals
-		self.ownerComp.store('InitPars', InitPars)
 		ipar.Widget.Initpars = [ self.pickle_par(x) for x in InitPars ]
-		self.ownerComp.store('InitVals', InitVals)
 		ipar.Widget.Initvals = InitVals
 
 		return
 
 
 	def Interact_RightClick_While( self , uDist , vDist ):
+		'''
+		currently not in use, but can be if we have any draggable control for right click in the future.
+		'''
 		return
 
 
 	def Interact_RightClick_Up( self ):
-		
-		# ValueStateDown = self.ownerComp.fetch('ValueState')
+		'''
+		this function triggeres the parameter change callback, upon right mouse button release.
+		IF the current values and the initial values are different from each other.
+		'''
+
+
+		# we need to give the chrome thread some few frames to catch up to ensure the webrender pick
+		# is returning the thing that was actually tapped/clicked. Only is needed for Touchscreen since there is no hover.
+		if ipar.Widget.Threaddelayblock == True:
+			# debug('Chrome Thread Block waiting...')
+			return
+
 		ValueStateDown = ipar.Widget.Valuestates.eval()
-		# InitPars = self.ownerComp.fetch('InitPars')
 		InitPars = [ self.unpickle_par(x) for x in ipar.Widget.Initpars.eval() ]
-		# InitVals = self.ownerComp.fetch('InitVals')
 		InitVals = ipar.Widget.Initvals.eval()
 		ValueStateUp = list(map(str,self.paramInfo.col('value')))
 		if (ValueStateUp != ValueStateDown):
@@ -972,6 +982,14 @@ class UG4:
 		action = ['down','while','up']
 		v_displacement = instantaneous amount to move scroll wheel by.
 		'''
+		
+		# we need to give the chrome thread some few frames to catch up to ensure the webrender pick
+		# is returning the thing that was actually tapped/clicked. Only is needed for Touchscreen since there is no hover.
+		if ipar.Widget.Threaddelayblock == True:
+			# debug('Chrome Thread Block waiting...')
+			return
+
+
 		ScrollContext = self.GetScrollContext()
 		self.ownerComp.Trigger_Escape()
 
@@ -988,7 +1006,6 @@ class UG4:
 		elif ScrollContext == 'adjust':
 			
 			if action == 'while':
-				# if self.ownerComp.fetch('sliderFreeze') == True:
 				if ipar.Widget.Sliderfreeze.eval() == True:
 					self.ownerComp.Interact_LeftClick_While( u , v , inputType = 'touch' )
 
@@ -1018,7 +1035,6 @@ class UG4:
 		action = ['down','while','up']
 		'''
 		ScrollContext = self.GetScrollContext()
-		#debug(action)
 
 		# LEFT side of UI.
 		if ScrollContext == 'scroll':
@@ -1032,26 +1048,31 @@ class UG4:
 
 			elif action == 'up':
 				self.Interact_Hover( 0 , u , v )
-				self.delayedLeftClickDown.run(delayFrames=1)
-				self.delayedLeftClickUp.run(delayFrames=2)
+				ipar.Widget.Threaddelayblock = True
+				self.delayedLeftClickDown.run(delayFrames=ipar.Widget.Threaddelay+1)
+				self.delayedLeftClickUp.run(delayFrames=ipar.Widget.Threaddelay+2)
+				self.delayedUnblock.run(delayFrames=ipar.Widget.Threaddelay)
 
 		# MIDDLE part of UI.
 		elif ScrollContext == 'adjust':
 			
 			if action == 'down':
-				self.ownerComp.store('sliderFreeze',False)
 				ipar.Widget.Sliderfreeze = False
 				self.Interact_Hover( 0 , u , v )
-				self.delayedLeftClickDown.run(delayFrames=1)
-				# self.delayedDoubleClick.run(delayFrames=2) ##### WHY am I doing this in the action=down logic branch???
+				ipar.Widget.Threaddelayblock = True
+				self.delayedLeftClickDown.run(delayFrames=ipar.Widget.Threaddelay+1)
+				self.delayedUnblock.run(delayFrames=ipar.Widget.Threaddelay)
 				# pass
 			
 			if action == 'while':
 				pass
 
 			elif action == 'up':
-				self.delayedLeftClickUp.run(delayFrames=1)
-				# pass
+				self.delayedLeftClickUp.run(delayFrames=ipar.Widget.Threaddelay+1)
+				self.delayedDoubleClick.run(delayFrames=ipar.Widget.Threaddelay+1)
+
+			elif action == 'doubleclick':
+				self.delayedDoubleClick.run(delayFrames=ipar.Widget.Threaddelay+1)
 
 		# RIGHT side of ui aka the actual scroll bar.s
 		elif ScrollContext == 'scrollbar':
@@ -1072,7 +1093,6 @@ class UG4:
 
 		# get u position as clamped 0-1
 		u = tdu.clamp( u , 0 , 1 )
-		# initParName = self.ownerComp.fetch("initParNAME" , '')
 		initParName = ipar.Widget.Initparname.eval()
 		
 		ScrollContext = self.GetScrollContext()
@@ -1151,7 +1171,6 @@ class UG4:
 			# and store them for now as latest, and restart scrolltimer.
 			else:
 				ValueState = list(map(str,self.paramInfo.col('value')))
-				self.ownerComp.store('ValueState' , ValueState)
 				ipar.Widget.Valuestates = ValueState
 				self.scrollTimer.par.start.pulse()
 
@@ -1278,15 +1297,20 @@ class UG4:
 								foundPar.val = menunames[newIndex]
 
 					# store the latest pars and values.
-					self.ownerComp.store('initPar', initPars)
 					ipar.Widget.Initpars = [ self.pickle_par(x) for x in initPars ]
-					self.ownerComp.store('initVal', initVals)
 					ipar.Widget.Initvals = initVals
 
 		return
 
 		
-		
+	def Disable_Drag_Overlay(self):
+		'''
+		a wrapper function that automates clearing the Drag Overlay if it got stuck on.
+		'''
+		firstParName = self.paramInfo.col('name')[1].val
+		self.Set_DragOverlay( self.webRenderTop, state=0, elementID=firstParName )
+
+		return
 		
 	def Set_DragOverlay(self, webRenderTop , state=0 , elementID='' ):
 		'''
@@ -1294,23 +1318,20 @@ class UG4:
 		this is used to cleanly drag the mouse left and right even
 		if the cursor leaves the bounds of the initially selected widget.
 		'''
+
 		state = 99 if state == 1 else -99
-		
-		# print(state,)
 		script = "Set_DragOverlay_('{0}','{1}')".format(state,elementID)
+		
 		webRenderTop.executeJavaScript(script)
 
 
 	def Trigger_DelayedScrollChange( self ):
 		# this timer chop gives us a slight delay before triggering the parameter changed script.
-		# ValueStateDown = self.ownerComp.fetch('ValueState')
 		ValueStateDown = ipar.Widget.Valuestates.eval()
 		ValueStateUp = list(map(str,self.paramInfo.col('value')))
 		if (ValueStateUp != ValueStateDown):
 			self.ownerComp.ParamChange( 
-				# pars=self.ownerComp.fetch("initPar" , []) ,
 				pars=[ unpickle_par(x) for x in ipar.Widget.Initpars.eval() ] ,
-				# prevVals=self.ownerComp.fetch("initVal" , []) ,
 				prevVals=ipar.Widget.Initvals.eval() ,
 				)
 		return
@@ -1346,7 +1367,7 @@ class UG4:
 
 			# this is a troubleshooting branch. this message shouldn't happen, but if it does indicates where the problem lies.
 			elif initParName == '_dragOverlayRight_':
-				debug('Couldnt launch UI for %s'%(initParName))
+				debug('Couldnt launch UI for %s because DragOVerlayRight was enabled'%(initParName))
 
 			# if we're here, it's assumed the user dbl clicked on an actual parameter.
 			else:
