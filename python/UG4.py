@@ -214,7 +214,11 @@ class UG4:
 				
 				if tupletStyle in [ 'RGB' , 'RGBA' ]:
 					# create the wrapper container for the parameter widget.
-					HTML += "    <div class='widget_ItemChooser' id='%s_cp' >\n"%( tuplet[0].name ) # cp == colorPicker
+					r = int(tuplet[0].eval()*255)
+					g = int(tuplet[1].eval()*255)
+					b = int(tuplet[2].eval()*255)
+					customColorStyle = "background-color:rgb(%i,%i,%i);"%(r,g,b)
+					HTML += "    <div class='widget_ItemChooser' id='%s_cp' style='%s' >\n"%( tuplet[0].name , customColorStyle ) # cp == colorPicker
 					HTML += "    ...</div>\n"
 				
 				
@@ -278,6 +282,7 @@ class UG4:
 		SRC = op(self.srcOpDat[0,0])
 		uberGuiOverrideDat = SRC.op('Uberguiconfigoverride')
 		data = []
+		colorPickerData = []
 
 		# iterate over all the table rows that changed..
 		for rowID in rows:
@@ -290,6 +295,20 @@ class UG4:
 			# just placeholders, we'll fill these in down below.
 			value = ''
 			slide = 0
+
+			# Edge Case #0 : buttons that can have state changes.
+			# conveniently, the param DAT outputs menu items ['off', 'on'] even for buttons, so
+			# we can take advantage of that for a value to show, and set our slider to 0% or 100%
+			if style in [ 'RGB' , 'RGBA' ]:
+				
+				menuindex = int(self.paramInfo[rowID,'value'])
+				tupletname = self.paramInfo[rowID,'tupletname'].val
+				red = int(float(self.paramInfo[tupletname+'r','value'].val)*255)
+				green = int(float(self.paramInfo[tupletname+'g','value'].val)*255)
+				blue = int(float(self.paramInfo[tupletname+'b','value'].val)*255)
+				# alpha = int(float(self.paramInfo[tupletname+'a','value'].val)*255)
+
+				colorPickerData += [ [tupletname,red,green,blue] ]
 			
 			# Edge Case #1 : menu params. We want to display 
 			# the selected item's menu label. so some lookup stuff happens for that.
@@ -393,12 +412,22 @@ class UG4:
 
 		# Update those changes to the web render top.
 		self.Update( op('WEB_RENDER') , data )
+		self.Update_ColorPickerBackground( op('WEB_RENDER') , colorPickerData )
 
 		return
 
 	def Update(self , webRenderTop , flatArgList ):
 		jsonArgsList = json.dumps(flatArgList).replace("'", '"')
 		script = "Update_('{0}')".format(jsonArgsList)
+		
+		try:
+			webRenderTop.executeJavaScript(script)
+		except:
+			pass
+
+	def Update_ColorPickerBackground(self , webRenderTop , flatArgList ):
+		jsonArgsList = json.dumps(flatArgList).replace("'", '"')
+		script = "Update_ColorPickerBackground_('{0}')".format(jsonArgsList)
 		
 		try:
 			webRenderTop.executeJavaScript(script)
@@ -1330,7 +1359,7 @@ class UG4:
 		ValueStateUp = list(map(str,self.paramInfo.col('value')))
 		if (ValueStateUp != ValueStateDown):
 			self.ownerComp.ParamChange( 
-				pars=[ unpickle_par(x) for x in ipar.Widget.Initpars.eval() ] ,
+				pars=[ self.unpickle_par(x) for x in ipar.Widget.Initpars.eval() ] ,
 				prevVals=ipar.Widget.Initvals.eval() ,
 				)
 		return

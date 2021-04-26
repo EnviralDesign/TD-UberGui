@@ -186,6 +186,7 @@ background-color: rgb(|+|Primaryinteractcolor|+|);
   margin-right: 0pt;
   transition: var(--hover-transition-time);
   border-radius: |+|Parametercornerradius|+|px;
+  text-shadow: 1px 1px #000000;
 }
 
 .widget_ItemChooser:hover {
