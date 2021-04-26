@@ -96,6 +96,27 @@ html, body {
   --is-read-only: 1; 
 }
 
+.widget_container.expression div {
+  font-style: italic;
+  color: rgb(100,200,200);
+  background-color: rgb(|+|Disabledparametercolor|+|);
+  --is-read-only: 1; 
+}
+
+.widget_container.export div {
+  font-style: italic;
+  color: rgb(128,180,128);
+  background-color: rgb(|+|Disabledparametercolor|+|);
+  --is-read-only: 1; 
+}
+
+.widget_container.bind div {
+  font-style: italic;
+  color: rgb(200,128,200);
+  background-color: rgb(|+|Disabledparametercolor|+|);
+  --is-read-only: 1; 
+}
+
 .widget_label {
   font-family: "|+|Parameterfont|+|";
   font-size: |+|Parameterfontsize|+|pt;

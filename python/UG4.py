@@ -65,6 +65,7 @@ class UG4:
 				tupletSection = tuplet[0].startSection
 				tupletStyle = tuplet[0].style
 				tupletReadOnly = tuplet[0].readOnly
+				mode_ = str(tuplet[0].mode).split('.')[-1].lower()
 				
 				# get the custom format of the parameter, if there is any.
 				if uberGuiOverrideDat != None:
@@ -79,12 +80,13 @@ class UG4:
 				isSingle = len(tuplet) == 1
 				# Generate the container for the entire widget row.
 
-				isReadOnly = ['',' readonly'][ int(tupletReadOnly) ]
+				parmode = { 'constant':'' , 'expression':' expression' , 'export':' export' , 'bind':' bind' }.get( mode_ , '' )
+				finalModeStyling = [parmode,' readonly'][ int(tupletReadOnly) ]
 				
 				if ID >= len(parTuplets)-1: # if this is the last widget...
-					HTML += '<div class="widget_container%s" id="_lastWidget_">\n'%(isReadOnly)
+					HTML += '<div class="widget_container%s" id="_lastWidget_">\n'%(finalModeStyling)
 				else:
-					HTML += '<div class="widget_container%s">\n'%(isReadOnly)
+					HTML += '<div class="widget_container%s">\n'%(finalModeStyling)
 				
 				
 				if tupletStyle in [ 'Pulse' ]:
