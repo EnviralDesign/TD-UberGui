@@ -17,7 +17,8 @@ class colorpicker:
 		
 		parent.colorpicker.par.display = 1
 		
-		parent.colorpicker.store('isModified' , 0)
+		# parent.colorpicker.store('isModified' , 0)
+		ipar.Widget.Ismodified = 0
 		
 		parent.Widget.op('container_foreground_focus').par.display = 1
 		
@@ -27,7 +28,8 @@ class colorpicker:
 		# closes the color picker. will still trigger param change callback if value has changed.
 		parent.colorpicker.par.display = 0
 		
-		isModified = parent.colorpicker.fetch('isModified' , 0)
+		# isModified = parent.colorpicker.fetch('isModified' , 0)
+		isModified = ipar.Widget.Ismodified.eval()
 		
 		if isModified == 1:
 			OPS = parent.colorpicker.par.Ops.eval()
@@ -40,7 +42,8 @@ class colorpicker:
 
 			parent.Widget.ParamChange(pars=initPars)
 		
-		parent.colorpicker.store('isModified' , 0)
+		# parent.colorpicker.store('isModified' , 0)
+		ipar.Widget.Ismodified = 0
 		
 		parent.Widget.op('container_foreground_focus').par.display = 0
 		
@@ -60,6 +63,7 @@ class colorpicker:
 				if parameter != ':PAR_ERR:':
 					parameter.val = vals[i]
 					
-					parent.colorpicker.store('isModified' , 1)
+					# parent.colorpicker.store('isModified' , 1)
+					ipar.Widget.Ismodified = 1
 					
 		# parent.Widget.op('container_foreground_focus').par.display = 0

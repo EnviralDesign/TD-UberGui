@@ -26,6 +26,7 @@ class field:
 	
 	def Launch(self, OPS , PAR, LEFT, RIGHT, BOTTOM, TOP):
 		# normal way to launch the field. it needs to know what ops to write to, the custom parameter to write to, and it's position to overlay.
+		
 		if paramInfo[PAR,'tupletname'] != None:
 			ugOverrideDat = op((parent.field.par.Ops.eval()[0] if isinstance(parent.field.par.Ops.eval(),list) else '') + '/Uberguiconfigoverride')
 			tupletName = paramInfo[ PAR , 'tupletname' ].val if paramInfo[ PAR , 'tupletname' ] != None else None
@@ -97,6 +98,9 @@ class field:
 		
 		# get custom override info, if any exists.
 		ugOverrideDat = op((parent.field.par.Ops.eval()[0] if len(parent.field.par.Ops.eval()) > 0 else '') + '/Uberguiconfigoverride')
+		if paramInfo[ PAR , 'tupletname' ] == None:
+			# debug('par <%s> did not exist in the "tupletname" col of the paramInfo dat.. why?'%(PAR))
+			return
 		tupletName = paramInfo[ PAR , 'tupletname' ].val
 		CustomFormat = str(ugOverrideDat[tupletName,'style']) if ugOverrideDat != None else None
 		STYLE = parameter.style

@@ -32,6 +32,31 @@ function Update_ ( jsonStr ) {
 };
 
 
+function Update_ColorPickerBackground_ ( jsonStr ) {
+	/*
+	This function updates the background of the color picker triple dot element.
+	from a json string payload coming from TD. IE when a color type param value changes.
+	*/
+	var jsonObj = JSON.parse( jsonStr );
+	
+	for(var i=0; i<jsonObj.length; i++) {  // for each argument
+		
+		var tupletname = jsonObj[i][0];
+		var red = jsonObj[i][1];
+		var green = jsonObj[i][2];
+		var blue = jsonObj[i][3];
+		
+		// the name structure of a color picker is tupletname + 'r' + '_cp', where r just stands for red, the first element of the tuple.
+		var pickerEl = document.getElementById( tupletname + 'r_cp' );
+		var bgcolorstr = 'rgb('+red+','+green+','+blue+')';
+		pickerEl.style.backgroundColor = 'rgb('+red+','+green+','+blue+')';
+		
+	};
+	
+	
+};
+
+
 
 
 function Set_DragOverlay_(depth,element) {
@@ -77,6 +102,9 @@ function Set_DragOverlay_(depth,element) {
 	var lastWidgetRect = document.getElementById( "_lastWidget_" ).getBoundingClientRect();
 	_darkener_bot_.style.height = (lastWidgetRect.bottom - rect.bottom) + "px";
 	_darkener_bot_.style.top = rect.bottom + "px";
+
+	// const secondsSinceEpoch = Math.round(Date.now());
+	// document.getElementById( "debug" ).innerHTML = secondsSinceEpoch;
 	
 	
 };
