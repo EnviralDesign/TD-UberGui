@@ -17,10 +17,15 @@ class menu:
 		# init and set some styling params of the widget.
 		parent.menu.par.Ops = [ x for x in OPS ]
 		parent.menu.par.Par = PAR
-		parent.menu.par.w = RIGHT - LEFT
-		parent.menu.par.h = op('row0_template').height*4.5
-		parent.menu.par.x = LEFT
+		parent.menu.par.h = min( op('row0_template').height * parent.Widget.par.Dropdownheightmultiplier.eval() , parent.Widget.height )
 		parent.menu.par.y = max( 0 , (parent.Widget.height - BOTTOM - parent.menu.par.h) )
+
+		if parent.Widget.par.Dropdownwidth.eval() == 'paramwidth':
+			parent.menu.par.w = RIGHT - LEFT
+			parent.menu.par.x = LEFT
+		elif parent.Widget.par.Dropdownwidth.eval() == 'fullwidth':
+			parent.menu.par.w = parent.Widget.width
+			parent.menu.par.x = 0
 		
 		# get the current menu state and labels.
 		currentVal = getattr( op(OPS[0]).par , PAR ).val
