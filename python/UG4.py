@@ -250,6 +250,20 @@ class UG4:
 			return { pair.split(':')[0]:pair.split(':')[1] for pair in titleStr.split(',') }
 		except:
 			return None
+
+	def pickle_par( self, parRef ):
+		'''
+		pickles a par ref, into a simple string of operatorpath.parname for storage in ipars.
+		'''
+		return '%s:%s'%(parRef.owner.path, parRef.name)
+
+	def unpickle_par( self, opParStr ):
+		'''
+		unpickles a par ref string into an actual par reference.
+		'''
+		splitRef = opParStr.split(':')
+		return op(splitRef[0]).par[splitRef[1]]
+
 	
 	def Update_Changed_Params( self , rows ):
 		'''
@@ -412,6 +426,7 @@ class UG4:
 		pikStr = self.webInfo['title',1].val
 		pikDict = self.ParseTitle(pikStr)
 		self.ownerComp.store("pikDict" , pikDict)
+		ipar.Widget.Pikdict = pikDict
 		
 		# If the user left clicked somewhere, we can be sure the auxilary UI stuffs should be closed, if not already.
 		op('field').Close()
@@ -433,10 +448,12 @@ class UG4:
 			# the parameters of multiple objects ! get those object(s) now and store them.
 			dstOps = [ x[0].val for x in self.dstOpsDat.rows() ]
 			self.ownerComp.store("initOps" , dstOps)
+			ipar.Widget.Initops = dstOps
 			
 			# get and store a list of the values of all the parameters in our source object.
 			ValueState = list(map(str,self.paramInfo.col('value')))
 			self.ownerComp.store('ValueState' , ValueState)
+			ipar.Widget.Valuestates = ValueState
 			
 			# now that our data is prepared, lets handle our numerous edge cases. The user might
 			# have their mouse over a label, or maybe a spacer. They might also have it over a slider, etc.
@@ -453,16 +470,20 @@ class UG4:
 				# list comp convert our destination operators to a list of destimation parameters, then store it.
 				foundPars = [ getattr( op(x).par , initParName , ":PAR_ERR:" ) for x in dstOps ]
 				self.ownerComp.store("initPar" , foundPars)
+				ipar.Widget.Initpars = [ self.pickle_par(x) for x in foundPars ]
 				
 				# determine the style of the parameter, and store it.
 				style = self.paramInfo[initParName,'style']
 				self.ownerComp.store("style" , style)
+				ipar.Widget.Style = style
 			
 			# Edge Case #2 : Spacers - not much to do here.
 			elif initParName == '_spacer_': # is a spacer
 				
 				self.ownerComp.store("parCick" , 0)
+				ipar.Widget.Parclick = 0
 				self.ownerComp.store("style" , '')
+				ipar.Widget.Style = ''
 			
 			# Edge Case #3 : Tool Tip.
 			elif initParName.endswith('_tt'): # is a tooltip.
@@ -556,6 +577,7 @@ class UG4:
 				
 				# store an indicator that we clicked an actual par, for later.
 				me.store("parCick" , 1)
+				ipar.Widget.Parclick = 1
 				
 				# if init par existed, fetch style, and normmin and normmax from the paramInfo table.
 				if self.paramInfo[initParName,'style'] != None:
@@ -587,18 +609,28 @@ class UG4:
 				# store some initial x/y position values, and our parameter list. 
 				# storing these paramters now means we don't have to re-look them up every frame during a drag. more efficient!
 				self.ownerComp.store("initX" , initX)
+				ipar.Widget.Initx = initX
 				self.ownerComp.store("initY" , initY)
+				ipar.Widget.Inity = initY
 				self.ownerComp.store("initPar" , foundPars)
+				ipar.Widget.Initpars = [ self.pickle_par(x) for x in foundPars ]
 
 				# we also need the initial value of the parameter, so we know how much relative, we've adjusted the value.
-				self.ownerComp.store('initVal' , [each.eval() for each in foundPars])
+				initVals = [each.eval() for each in foundPars]
+				self.ownerComp.store('initVal' , initVals)
+				ipar.Widget.Initvals = initVals
 				
 				# we also need some other attributes of our parameter during our drag operations, store those too.
 				self.ownerComp.store("normMin" , normMin)
+				ipar.Widget.Normmin = normMin
 				self.ownerComp.store("normMax" , normMax)
+				ipar.Widget.Normmax = normMax
 				self.ownerComp.store("style" , style)
+				ipar.Widget.Style = style
 				self.ownerComp.store("menunames" , menunames)
+				ipar.Widget.Menunames = menunames
 				self.ownerComp.store("initParNAME" , initParName)
+				ipar.Widget.Initparname = initParName
 				
 				# if the parameter style is one that can have a slider graphic, we need to set our DragOverlay to mask our active parameter.
 				if style in [ 'Float' , 'RGB' , 'RGBA' , 'UV' , 'UVW' , 'XY' , 'XYZ' , 'WH' , 'Int' , 'Menu' , 'StrMenu' ]:
@@ -679,7 +711,9 @@ class UG4:
 			
 			# else, assume user is dragging over the parameter slider.
 			else:
-				pars = self.ownerComp.fetch("initPar" , [])
+				# pars = self.ownerComp.fetch("initPar" , [])
+				pars = [ self.unpickle_par(x) for x in ipar.Widget.Initpars.eval() ]#  if isinstance(ipar.Widget.Initpars.eval(), list) else []
+
 
 				# only proceed if we have at least 1 par. Should only have one anyways.
 				if len(pars):
@@ -691,12 +725,18 @@ class UG4:
 					if pikStr != "" and par != ":PAR_ERR:":
 						
 						# fetch a bunch of our initial data stored during down click.
-						initX = self.ownerComp.fetch("initX" , 0)
-						initY = self.ownerComp.fetch("initY" , 0)
-						normMin = self.ownerComp.fetch("normMin" , 0)
-						normMax = self.ownerComp.fetch("normMax" , 1)
-						style = self.ownerComp.fetch("style" , '')
-						menunames = self.ownerComp.fetch("menunames" , [])
+						# initX = self.ownerComp.fetch("initX" , 0)
+						initX = ipar.Widget.Initx.eval()
+						# initY = self.ownerComp.fetch("initY" , 0)
+						initY = ipar.Widget.Inity.eval()
+						# normMin = self.ownerComp.fetch("normMin" , 0)
+						normMin = ipar.Widget.Normmin.eval()
+						# normMax = self.ownerComp.fetch("normMax" , 1)
+						normMax = ipar.Widget.Normmax.eval()
+						# style = self.ownerComp.fetch("style" , '')
+						style = ipar.Widget.Style.eval()
+						# menunames = self.ownerComp.fetch("menunames" , [])
+						menunames = ipar.Widget.Menunames.eval()
 
 						# only proceed with this branch IF user has dragged mouse away from initial position.
 						if hasUserDraggedMouse:
@@ -754,10 +794,14 @@ class UG4:
 		pikDict = self.ParseTitle(pikStr)
 		
 		# fetch some of the things we stored on the down click.
-		pars = self.ownerComp.fetch("initPar" , [])
-		initVals = self.ownerComp.fetch("initVal" , [])
-		dstOps = self.ownerComp.fetch("initOps" , [])
-		ValueStateDown = self.ownerComp.fetch('ValueState',[])
+		# pars = self.ownerComp.fetch("initPar" , [])
+		pars = [ self.unpickle_par(x) for x in ipar.Widget.Initpars.eval() ]
+		# initVals = self.ownerComp.fetch("initVal" , [])
+		initVals = ipar.Widget.Initvals.eval()
+		# dstOps = self.ownerComp.fetch("initOps" , [])
+		dstOps = ipar.Widget.Initops.eval()
+		# ValueStateDown = self.ownerComp.fetch('ValueState',[])
+		ValueStateDown = ipar.Widget.Valuestates.eval()
 		
 		# get the current state of the parameter.
 		ValueStateUp = list(map(str,self.paramInfo.col('value')))
@@ -783,7 +827,8 @@ class UG4:
 					# get the current X/Y and fetch style from storage.
 					initX = float( pikDict["X"] )
 					initY = float( pikDict["Y"] )
-					style = self.ownerComp.fetch("style" , '')
+					# style = self.ownerComp.fetch("style" , '')
+					style = ipar.Widget.Style.eval()
 					
 					# we also want the NEXT par in line, as well as it's bounds incase user tabs.
 					initParName2 = str( pikDict["Par2"] )
@@ -851,6 +896,7 @@ class UG4:
 		# get list of all current values and store.
 		ValueState = list(map(str,self.paramInfo.col('value')))
 		self.ownerComp.store('ValueState' , ValueState)
+		ipar.Widget.Valuestates = ValueState
 		
 		# Get the html title, which contains the 'WebRenderPick' custom data.
 		pikStr = self.webInfo['title',1].val
@@ -895,7 +941,9 @@ class UG4:
 		
 		# store init pars and vals
 		self.ownerComp.store('InitPars', InitPars)
+		ipar.Widget.Initpars = [ self.pickle_par(x) for x in InitPars ]
 		self.ownerComp.store('InitVals', InitVals)
+		ipar.Widget.Initvals = InitVals
 
 		return
 
@@ -906,9 +954,12 @@ class UG4:
 
 	def Interact_RightClick_Up( self ):
 		
-		ValueStateDown = self.ownerComp.fetch('ValueState')
-		InitPars = self.ownerComp.fetch('InitPars')
-		InitVals = self.ownerComp.fetch('InitVals')
+		# ValueStateDown = self.ownerComp.fetch('ValueState')
+		ValueStateDown = ipar.Widget.Valuestates.eval()
+		# InitPars = self.ownerComp.fetch('InitPars')
+		InitPars = [ self.unpickle_par(x) for x in ipar.Widget.Initpars.eval() ]
+		# InitVals = self.ownerComp.fetch('InitVals')
+		InitVals = ipar.Widget.Initvals.eval()
 		ValueStateUp = list(map(str,self.paramInfo.col('value')))
 		if (ValueStateUp != ValueStateDown):
 			self.ParamChange(pars=InitPars, prevVals=InitVals)
@@ -937,7 +988,8 @@ class UG4:
 		elif ScrollContext == 'adjust':
 			
 			if action == 'while':
-				if self.ownerComp.fetch('sliderFreeze') == True:
+				# if self.ownerComp.fetch('sliderFreeze') == True:
+				if ipar.Widget.Sliderfreeze.eval() == True:
 					self.ownerComp.Interact_LeftClick_While( u , v , inputType = 'touch' )
 
 			elif action == 'up':
@@ -966,8 +1018,9 @@ class UG4:
 		action = ['down','while','up']
 		'''
 		ScrollContext = self.GetScrollContext()
+		#debug(action)
 
-		# LEFT
+		# LEFT side of UI.
 		if ScrollContext == 'scroll':
 			
 			if action == 'down':
@@ -978,18 +1031,19 @@ class UG4:
 				pass
 
 			elif action == 'up':
-				self.ownerComp.Interact_Hover( 0 , u , v )
+				self.Interact_Hover( 0 , u , v )
 				self.delayedLeftClickDown.run(delayFrames=1)
 				self.delayedLeftClickUp.run(delayFrames=2)
 
-		# MIDDLE
+		# MIDDLE part of UI.
 		elif ScrollContext == 'adjust':
 			
 			if action == 'down':
 				self.ownerComp.store('sliderFreeze',False)
-				self.ownerComp.Interact_Hover( 0 , u , v )
+				ipar.Widget.Sliderfreeze = False
+				self.Interact_Hover( 0 , u , v )
 				self.delayedLeftClickDown.run(delayFrames=1)
-				self.delayedDoubleClick.run(delayFrames=2)
+				# self.delayedDoubleClick.run(delayFrames=2) ##### WHY am I doing this in the action=down logic branch???
 				# pass
 			
 			if action == 'while':
@@ -999,17 +1053,11 @@ class UG4:
 				self.delayedLeftClickUp.run(delayFrames=1)
 				# pass
 
-		# RIGHT
+		# RIGHT side of ui aka the actual scroll bar.s
 		elif ScrollContext == 'scrollbar':
 			pass
 
 		return
-
-	# def Interact_Hover( self , select , u , v ):
-	# 	# calculate the X and Y position in absolute pixel values. This is what the render top wants.
-	# 	x = int(u * self.ownerComp.width)
-	# 	x = tdu.clamp(x , 0 , self.ownerComp.width)
-	# 	y = int( self.ownerComp.height - int(v * self.ownerComp.height) )
 
 
 	def Interact_Hover( self , select , u , v ):
@@ -1024,18 +1072,16 @@ class UG4:
 
 		# get u position as clamped 0-1
 		u = tdu.clamp( u , 0 , 1 )
-		initParName = self.ownerComp.fetch("initParNAME" , '')
+		# initParName = self.ownerComp.fetch("initParNAME" , '')
+		initParName = ipar.Widget.Initparname.eval()
+		
 		ScrollContext = self.GetScrollContext()
-
-		# print(select,u,v)
 		
 		if ScrollContext == 'scrollbar':
 			# send the mouse position, and last initialized par name to Mouse function.
 			self.ownerComp.Mouse( self.webRenderTop, x , y , '' , select )
 
 		elif ScrollContext == 'adjust':
-			# get the initParName from the left select script dat storage.
-			# initParName = self.ownerComp.fetch("initParNAME" , '')
 			if select == 1:
 				forcedParName = initParName
 			else:
@@ -1106,6 +1152,7 @@ class UG4:
 			else:
 				ValueState = list(map(str,self.paramInfo.col('value')))
 				self.ownerComp.store('ValueState' , ValueState)
+				ipar.Widget.Valuestates = ValueState
 				self.scrollTimer.par.start.pulse()
 
 			# parse our webRenderPick dat.
@@ -1232,7 +1279,9 @@ class UG4:
 
 					# store the latest pars and values.
 					self.ownerComp.store('initPar', initPars)
+					ipar.Widget.Initpars = [ self.pickle_par(x) for x in initPars ]
 					self.ownerComp.store('initVal', initVals)
+					ipar.Widget.Initvals = initVals
 
 		return
 
@@ -1254,12 +1303,15 @@ class UG4:
 
 	def Trigger_DelayedScrollChange( self ):
 		# this timer chop gives us a slight delay before triggering the parameter changed script.
-		ValueStateDown = self.ownerComp.fetch('ValueState')
+		# ValueStateDown = self.ownerComp.fetch('ValueState')
+		ValueStateDown = ipar.Widget.Valuestates.eval()
 		ValueStateUp = list(map(str,self.paramInfo.col('value')))
 		if (ValueStateUp != ValueStateDown):
 			self.ownerComp.ParamChange( 
-				pars=self.ownerComp.fetch("initPar" , []) ,
-				prevVals=self.ownerComp.fetch("initVal" , []) ,
+				# pars=self.ownerComp.fetch("initPar" , []) ,
+				pars=[ unpickle_par(x) for x in ipar.Widget.Initpars.eval() ] ,
+				# prevVals=self.ownerComp.fetch("initVal" , []) ,
+				prevVals=ipar.Widget.Initvals.eval() ,
 				)
 		return
 

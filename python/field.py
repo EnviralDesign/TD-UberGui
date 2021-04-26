@@ -26,6 +26,7 @@ class field:
 	
 	def Launch(self, OPS , PAR, LEFT, RIGHT, BOTTOM, TOP):
 		# normal way to launch the field. it needs to know what ops to write to, the custom parameter to write to, and it's position to overlay.
+		
 		if paramInfo[PAR,'tupletname'] != None:
 			ugOverrideDat = op((parent.field.par.Ops.eval()[0] if isinstance(parent.field.par.Ops.eval(),list) else '') + '/Uberguiconfigoverride')
 			tupletName = paramInfo[ PAR , 'tupletname' ].val if paramInfo[ PAR , 'tupletname' ] != None else None
