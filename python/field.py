@@ -98,6 +98,9 @@ class field:
 		
 		# get custom override info, if any exists.
 		ugOverrideDat = op((parent.field.par.Ops.eval()[0] if len(parent.field.par.Ops.eval()) > 0 else '') + '/Uberguiconfigoverride')
+		if paramInfo[ PAR , 'tupletname' ] == None:
+			# debug('par <%s> did not exist in the "tupletname" col of the paramInfo dat.. why?'%(PAR))
+			return
 		tupletName = paramInfo[ PAR , 'tupletname' ].val
 		CustomFormat = str(ugOverrideDat[tupletName,'style']) if ugOverrideDat != None else None
 		STYLE = parameter.style
