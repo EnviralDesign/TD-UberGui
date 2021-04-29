@@ -1,3 +1,5 @@
+
+
 paramInfo = parent.Widget.op('null_paramInfo')
 
 class field:
@@ -168,6 +170,9 @@ class field:
 		
 	def Close(self):
 		# triggered if user cancels field interaction.
+		
 		parent.field.par.display = 0
 		parent.Widget.par.Fieldmode = 0
 		parent.Widget.op('container_foreground_focus').par.display = 0
+
+		# TraceFunctionCall()

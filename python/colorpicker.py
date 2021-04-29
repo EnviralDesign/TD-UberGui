@@ -2,6 +2,10 @@ class colorpicker:
 	def __init__(self, ownerComp):
 		# The component to which this extension is attached
 		self.ownerComp = ownerComp
+		self.hsvChop = op('null_hsv')
+		self.hsvDat = op('table_hsv')
+		self.h_comp = op('hue')
+		self.sv_comp = op('hue')
 
 
 	def Launch(self, OPS , PAR, LEFT, RIGHT, BOTTOM, TOP):
@@ -17,9 +21,17 @@ class colorpicker:
 		
 		parent.colorpicker.par.display = 1
 		
-		# parent.colorpicker.store('isModified' , 0)
 		ipar.Widget.Ismodified = 0
-		
+
+
+		self.hsvChop.cook(force=True)
+		h = self.hsvChop['h']
+		s = self.hsvChop['s']
+		v = self.hsvChop['v']
+		self.hsvDat['h',1] = h
+		self.hsvDat['s',1] = s
+		self.hsvDat['v',1] = v
+
 		parent.Widget.op('container_foreground_focus').par.display = 1
 		
 		
@@ -42,7 +54,6 @@ class colorpicker:
 
 			parent.Widget.ParamChange(pars=initPars)
 		
-		# parent.colorpicker.store('isModified' , 0)
 		ipar.Widget.Ismodified = 0
 		
 		parent.Widget.op('container_foreground_focus').par.display = 0

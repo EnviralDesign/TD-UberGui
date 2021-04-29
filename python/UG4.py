@@ -1,5 +1,5 @@
 import json
-import traceback
+import traceback, inspect
 
 class UG4:
 
@@ -22,6 +22,8 @@ class UG4:
 		self.fieldCOMP = op('field')
 		self.menuCOMP = op('menu')
 		self.colorpickerCOMP = op('colorpicker')
+		self.nonDragTypes = [ '_cp', '_fp', '_mp', ]
+		self.nonTapHoldTypes = [ '_cp', '_fp', '_mp', ]
 		
 		
 	def Regenerate(self, SRC ):
@@ -1071,6 +1073,9 @@ class UG4:
 		if ScrollContext == 'scroll':
 			
 			if action == 'down':
+				pikStr = self.webInfo['title',1].val
+				pikDict = self.ParseTitle(pikStr)
+				ipar.Widget.Pikdict = pikDict
 				self.Interact_Hover( 0 , u , v )
 				# pass
 			
@@ -1648,3 +1653,53 @@ class UG4:
 	def SetMode_Touch(self):
 		if self.ownerComp.par.Inputmode.eval() != 'touch':
 			self.ownerComp.par.Inputmode = 'touch'
+
+	def IsDraggable(self, parName):
+		'''
+		things like color pickers, menu pickers, etc are not draggable.
+		this function expects the full par name returned from ubergui, with suffix and all.
+		this will be tested against a list of pre determined suffixes.
+		'''
+		return not max( [ parName.endswith(x) for x in self.nonDragTypes ] )
+
+	def IsTapHoldable(self, parName):
+		'''
+		things like color pickers, menu pickers, etc are not tap holdable.
+		this function expects the full par name returned from ubergui, with suffix and all.
+		this will be tested against a list of pre determined suffixes.
+		'''
+		return not max( [ parName.endswith(x) for x in self.nonTapHoldTypes ] )
+
+	def TraceFunctionCall( self ):
+		'''
+		This function will print the entire function call's stack trace showing what called what where.
+		Obviously if you use scriptDat.run() it will break the function call chain.
+		'''
+		inspectedStack = inspect.stack()
+
+		source = []
+		line = []
+		function = []
+		for f in inspectedStack[::-1]:
+			frameInfo = inspect.getframeinfo(f[0])
+			source += [frameInfo[0]]
+			line += [str(frameInfo[1])]
+			function += [frameInfo[2]]
+
+		source_max = max( [len(x) for x in source] )
+		line_max = max( [len(x) for x in line] )
+		function_max = max( [len(x) for x in function] )
+
+		print('-'*(source_max+line_max+function_max+11))
+
+		for i,f in enumerate(zip(source,line,function)):
+			f = list(f)
+			source_ = f[0].ljust(source_max)
+			line_ = f[1].ljust(line_max)
+			function_ = (f[2]+'()').ljust(function_max)
+
+			print('%i) %s : %s : %s'%(i,source_,line_,function_))
+
+		print('-'*(source_max+line_max+function_max+11))
+
+		return
