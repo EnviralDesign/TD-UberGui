@@ -91,30 +91,30 @@ html, body {
 
 .widget_container.readonly div {
   font-style: italic;
-  color: rgb(|+|Minortextcolor|+|);
+  color: rgb(|+|Readonlycolor|+|);
   background-color: rgb(|+|Disabledparametercolor|+|);
   --is-read-only: 1; 
 }
 
 .widget_container.expression div {
   font-style: italic;
-  color: rgb(100,200,200);
+  color: rgb(|+|Expressioncolor|+|);
   background-color: rgb(|+|Disabledparametercolor|+|);
   --is-read-only: 1; 
 }
 
 .widget_container.export div {
   font-style: italic;
-  color: rgb(128,180,128);
+  color: rgb(|+|Exportcolor|+|);
   background-color: rgb(|+|Disabledparametercolor|+|);
   --is-read-only: 1; 
 }
 
 .widget_container.bind div {
-  font-style: italic;
-  color: rgb(200,128,200);
-  background-color: rgb(|+|Disabledparametercolor|+|);
-  --is-read-only: 1; 
+  /*font-style: italic;*/
+  color: rgb(|+|Bindcolor|+|);
+  /*background-color: rgb(|+|Disabledparametercolor|+|);*/
+  /*--is-read-only: 1; */
 }
 
 .widget_label {
