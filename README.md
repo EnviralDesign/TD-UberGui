@@ -154,7 +154,7 @@ To enter field mode, just quickly tap any field, or tap the parameter name to th
 
 ### Other Features
 
-Parameters that have read only enabled, or who's parameter mode is set to expression, export, or bind will show as follows, and not be editable via UberGui.
+Parameters that have read only enabled, or who's parameter mode is set to expression, export, or bind will show as follows, and not be editable via UberGui with the exception of Bound parameters.
 
 ![ubergui read only](https://user-images.githubusercontent.com/10091486/116152339-68097200-a6ab-11eb-8a6f-92f7f2e11b1a.png)
 
