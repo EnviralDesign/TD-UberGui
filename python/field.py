@@ -56,7 +56,8 @@ class field:
 		# the value that already exists in the par. IE rounding long floats, or making sure ints look like ints, etc.
 		if doesParExist != None:
 			
-			currentVal = currentPar.val
+			
+			currentVal = currentPar.eval()
 			currentStyle = currentPar.style
 			
 			if currentStyle in [ 'Float' , 'RGB' , 'RGBA' , 'UV' , 'UVW' , 'XY' , 'XYZ' , 'WH' ]:

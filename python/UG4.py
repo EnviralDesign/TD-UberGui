@@ -52,6 +52,9 @@ class UG4:
 				
 				# Generate section label.
 				PAGE = tuplet[0].page.name
+				if tuplet[0].style == 'Header':
+					PAGE = tuplet[0].label
+
 				if PAGE not in discoveredPages:
 					discoveredPages += [ PAGE ]
 					
@@ -68,184 +71,187 @@ class UG4:
 				tupletStyle = tuplet[0].style
 				tupletReadOnly = tuplet[0].readOnly
 				mode_ = str(tuplet[0].mode).split('.')[-1].lower()
-				
-				# get the custom format of the parameter, if there is any.
-				if uberGuiOverrideDat != None:
-					CustomFormat = uberGuiOverrideDat[tupletName,'style'].val if uberGuiOverrideDat[tupletName,'style'] != None else None
-					CustomFormat = CustomFormat if CustomFormat != '' else None
-				else:
-					CustomFormat = None
-				
-				if tupletSection == 1:
-					HTML += "<div class='spacer_section' id='_spacer_' ></div>\n\n"
-				
-				isSingle = len(tuplet) == 1
-				# Generate the container for the entire widget row.
 
-				parmode = { 'constant':'' , 'expression':' expression' , 'export':' export' , 'bind':' bind' }.get( mode_ , '' )
-				finalModeStyling = [parmode,' readonly'][ int(tupletReadOnly) ]
-				
-				if ID >= len(parTuplets)-1: # if this is the last widget...
-					HTML += '<div class="widget_container%s" id="_lastWidget_">\n'%(finalModeStyling)
-				else:
-					HTML += '<div class="widget_container%s">\n'%(finalModeStyling)
-				
-				
-				if tupletStyle in [ 'Pulse' ]:
-					# Generate the label for the widget row. this is based on the tuplet name, and occupies the left side.
-					HTML += "  <div class='widget_label' id='%s_l' style='display:none' >%s</div>\n"%( tupletName , tupletLabel )
-				else:
-					# Generate the label for the widget row. this is based on the tuplet name, and occupies the left side.
-					HTML += "  <div class='widget_label' id='%s_l'>%s</div>\n"%( tupletName , tupletLabel )
+				if tupletStyle != 'Header':
 					
-				
-				# Generate the tool tip hoverable div container.
-				HTML += "    <div class='widget_tooltip' id='%s_tt'>&quest;</div>\n"%( tupletName )
-				
-				
-				
-				if tupletStyle in [ 'Pulse' ]:
-					# Generate the label for the widget row. this is based on the tuplet name, and occupies the left side.
-					HTML += "  <div class='widget_body' id='%s_b' style='width:100%%'>\n"%( tupletName )
-				else:
-					# Generate the value widget area, which occupies the right side. This can contain one or more widget sliders.
-					HTML += "  <div class='widget_body' id='%s_b'>\n"%( tupletName )
-
-				
-				
-				
-				# for each parameter in the row tuplet. Most of the time this will only be 1 anyways. RGB for ex can have 3 though.
-				for parIndex,par in enumerate(tuplet):
-					
-					# for menu type params, we need to handle things a bit differently.
-					if par.style in [ 'Menu' , 'StrMenu' ]:
-						
-						# try to identify which menu index we have. strMenu's have the ability to silently error, so try/except catches that.
-						try:
-							labelIndex = par.menuNames.index(par.eval())
-							label = par.menuLabels[labelIndex]
-						except:
-							labelIndex = 0
-							label = ''
-						
-						# create the wrapper container for the parameter widget.
-						HTML += "    <div class='widget_item' id='%s' >\n"%( par.name )
-						
-						# calculate and generate slider width as a percentage.
-						widthPercentage = tdu.remap( labelIndex , 0 , len(par.menuLabels)-1 , 0 , 100 )
-						HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
-						
-						# draw the text over the slider graphic.
-						HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , label )
-						
-						HTML += "    </div>\n"
-					
-					elif par.style in [ 'Momentary' , 'Toggle' ]:
-						
-						labelIndex = par.eval()
-						label = par.menuLabels[labelIndex]
-						
-						# create the wrapper container for the parameter widget.
-						HTML += "    <div class='widget_item' id='%s' >\n"%( par.name )
-						
-						# calculate and generate slider width as a percentage.
-						widthPercentage = tdu.remap( labelIndex , 0 , len(par.menuLabels)-1 , 0 , 100 )
-						HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
-						
-						# draw the text over the slider graphic.
-						HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , label )
-						
-						HTML += "    </div>\n"
-					
-					elif par.style in [ 'Pulse' ]:
-						
-						label = "Pulse"
-						
-						# create the wrapper container for the parameter widget.
-						HTML += "    <div class='widget_item' id='%s' >\n"%( par.name )
-						
-						# draw the text over the slider graphic.
-						HTML += "      <div class='widget_text' id='%s_t' style='text-align: center;' >%s</div>\n"%( par.name , par.label )
-						
-						HTML += "    </div>\n"
-						
-					
-					# if we're dealing with anything else...
+					# get the custom format of the parameter, if there is any.
+					if uberGuiOverrideDat != None:
+						CustomFormat = uberGuiOverrideDat[tupletName,'style'].val if uberGuiOverrideDat[tupletName,'style'] != None else None
+						CustomFormat = CustomFormat if CustomFormat != '' else None
 					else:
-						
-						# if we're dealing with float type parameters.
-						val = par.eval()
+						CustomFormat = None
+					
+					if tupletSection == 1:
+						HTML += "<div class='spacer_section' id='_spacer_' ></div>\n\n"
+					
+					isSingle = len(tuplet) == 1
+					# Generate the container for the entire widget row.
 
+					parmode = { 'constant':'' , 'expression':' expression' , 'export':' export' , 'bind':' bind' }.get( mode_ , '' )
+					finalModeStyling = [parmode,' readonly'][ int(tupletReadOnly) ]
+					
+					if ID >= len(parTuplets)-1: # if this is the last widget...
+						HTML += '<div class="widget_container%s" id="_lastWidget_">\n'%(finalModeStyling)
+					else:
+						HTML += '<div class="widget_container%s">\n'%(finalModeStyling)
+					
+					
+					if tupletStyle in [ 'Pulse' ]:
+						# Generate the label for the widget row. this is based on the tuplet name, and occupies the left side.
+						HTML += "  <div class='widget_label' id='%s_l' style='display:none' >%s</div>\n"%( tupletName , tupletLabel )
+					else:
+						# Generate the label for the widget row. this is based on the tuplet name, and occupies the left side.
+						HTML += "  <div class='widget_label' id='%s_l'>%s</div>\n"%( tupletName , tupletLabel )
 						
+					
+					# Generate the tool tip hoverable div container.
+					HTML += "    <div class='widget_tooltip' id='%s_tt'>&quest;</div>\n"%( tupletName )
+					
+					
+					
+					if tupletStyle in [ 'Pulse' ]:
+						# Generate the label for the widget row. this is based on the tuplet name, and occupies the left side.
+						HTML += "  <div class='widget_body' id='%s_b' style='width:100%%'>\n"%( tupletName )
+					else:
+						# Generate the value widget area, which occupies the right side. This can contain one or more widget sliders.
+						HTML += "  <div class='widget_body' id='%s_b'>\n"%( tupletName )
+
+					# if tupletStyle in [ 'Header' ]:
+						# HTML += "<div class='header_container' id='%s_p'>%s</div>\n\n"%(PAGE,PAGE)
+					
+					
+					# for each parameter in the row tuplet. Most of the time this will only be 1 anyways. RGB for ex can have 3 though.
+					for parIndex,par in enumerate(tuplet):
 						
-						# create the wrapper container for the parameter widget.
-						HTML += "    <div class='widget_item' id='%s' >\n"%( par.name )
-						
-						if par.style in [ 'Float', 'RGB', 'RGBA', 'UV' , 'UVW' , 'WH'  , 'XY'  , 'XYZ' ]:
-							widthPercentage = tdu.remap( val , par.min , par.max , 0 , 100 )
+						# for menu type params, we need to handle things a bit differently.
+						if par.style in [ 'Menu' , 'StrMenu' ]:
+							
+							# try to identify which menu index we have. strMenu's have the ability to silently error, so try/except catches that.
+							try:
+								labelIndex = par.menuNames.index(par.eval())
+								label = par.menuLabels[labelIndex]
+							except:
+								labelIndex = 0
+								label = ''
+							
+							# create the wrapper container for the parameter widget.
+							HTML += "    <div class='widget_item' id='%s' >\n"%( par.name )
+							
+							# calculate and generate slider width as a percentage.
+							widthPercentage = tdu.remap( labelIndex , 0 , len(par.menuLabels)-1 , 0 , 100 )
 							HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
 							
-						
-							if CustomFormat == None:
-								
-								if self.IsStringFloat(val) == True:
-									val = int(float(val) * 1000) / 1000
-								
-								HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
-							elif CustomFormat in [ 'Rgba255' ]:
-								
-								HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , int(round(val*255)) )
-								
-								
-						elif par.style in [ 'Int' ]:
-							widthPercentage = tdu.remap( val , par.min , par.max , 0 , 100 )
-							HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
-							val = int(val)
-							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
-
-
-						elif par.style in [ 'COMP' , 'CHOP' , 'DAT' , 'MAT' , 'OBJ' , 'OP' , 'PanelCOMP' , 'SOP' , 'TOP' ]:
-							val = par.val
-							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
-
+							# draw the text over the slider graphic.
+							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , label )
 							
+							HTML += "    </div>\n"
+						
+						elif par.style in [ 'Momentary' , 'Toggle' ]:
+							
+							labelIndex = par.eval()
+							label = par.menuLabels[labelIndex]
+							
+							# create the wrapper container for the parameter widget.
+							HTML += "    <div class='widget_item' id='%s' >\n"%( par.name )
+							
+							# calculate and generate slider width as a percentage.
+							widthPercentage = tdu.remap( labelIndex , 0 , len(par.menuLabels)-1 , 0 , 100 )
+							HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
+							
+							# draw the text over the slider graphic.
+							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , label )
+							
+							HTML += "    </div>\n"
+						
+						elif par.style in [ 'Pulse' ]:
+							
+							label = "Pulse"
+							
+							# create the wrapper container for the parameter widget.
+							HTML += "    <div class='widget_item' id='%s' >\n"%( par.name )
+							
+							# draw the text over the slider graphic.
+							HTML += "      <div class='widget_text' id='%s_t' style='text-align: center;' >%s</div>\n"%( par.name , par.label )
+							
+							HTML += "    </div>\n"
+							
+						
+						# if we're dealing with anything else...
 						else:
-							HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
 							
-						
-						HTML += "    </div>\n"
+							# if we're dealing with float type parameters.
+							val = par.eval()
+
+							
+							
+							# create the wrapper container for the parameter widget.
+							HTML += "    <div class='widget_item' id='%s' >\n"%( par.name )
+							
+							if par.style in [ 'Float', 'RGB', 'RGBA', 'UV' , 'UVW' , 'WH'  , 'XY'  , 'XYZ' ]:
+								widthPercentage = tdu.remap( val , par.min , par.max , 0 , 100 )
+								HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
+								
+							
+								if CustomFormat == None:
+									
+									if self.IsStringFloat(val) == True:
+										val = int(float(val) * 1000) / 1000
+									
+									HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
+								elif CustomFormat in [ 'Rgba255' ]:
+									
+									HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , int(round(val*255)) )
+									
+									
+							elif par.style in [ 'Int' ]:
+								widthPercentage = tdu.remap( val , par.min , par.max , 0 , 100 )
+								HTML += "      <div class='widget_slider' id='%s_s' style='width:%i%%' ></div>\n"%( par.name , int(widthPercentage) )
+								val = int(val)
+								HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
+
+
+							elif par.style in [ 'COMP' , 'CHOP' , 'DAT' , 'MAT' , 'OBJ' , 'OP' , 'PanelCOMP' , 'SOP' , 'TOP' ]:
+								val = par.val
+								HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
+
+								
+							else:
+								HTML += "      <div class='widget_text' id='%s_t' >%s</div>\n"%( par.name , val )
+								
+							
+							HTML += "    </div>\n"
+					
+					
+					if tupletStyle in [ 'RGB' , 'RGBA' ]:
+						# create the wrapper container for the parameter widget.
+						r = int(tuplet[0].eval()*255)
+						g = int(tuplet[1].eval()*255)
+						b = int(tuplet[2].eval()*255)
+						customColorStyle = "background-color:rgb(%i,%i,%i);"%(r,g,b)
+						HTML += "    <div class='widget_ItemChooser' id='%s_cp' style='%s' >\n"%( tuplet[0].name , customColorStyle ) # cp == colorPicker
+						HTML += "    ...</div>\n"
+					
+					
+					elif par.style in [ 'Menu' , 'StrMenu' ]:
+						# create the wrapper container for the parameter widget.
+						HTML += "    <div class='widget_ItemChooser' id='%s_mp' >\n"%( tuplet[0].name ) # mp == menuPicker
+						HTML += "    ...</div>\n"
+					
+					
+					elif tupletStyle in [ 'File' , 'Folder' ]:
+						# create the wrapper container for the parameter widget.
+						HTML += "    <div class='widget_ItemChooser' id='%s_fp' >\n"%( tuplet[0].name ) # fp == file/folder picker
+						HTML += "    ...</div>\n"
+					
+					
+					HTML += "  </div>\n"
+					
+					HTML += '</div>\n\n'
 				
 				
-				if tupletStyle in [ 'RGB' , 'RGBA' ]:
-					# create the wrapper container for the parameter widget.
-					r = int(tuplet[0].eval()*255)
-					g = int(tuplet[1].eval()*255)
-					b = int(tuplet[2].eval()*255)
-					customColorStyle = "background-color:rgb(%i,%i,%i);"%(r,g,b)
-					HTML += "    <div class='widget_ItemChooser' id='%s_cp' style='%s' >\n"%( tuplet[0].name , customColorStyle ) # cp == colorPicker
-					HTML += "    ...</div>\n"
-				
-				
-				elif par.style in [ 'Menu' , 'StrMenu' ]:
-					# create the wrapper container for the parameter widget.
-					HTML += "    <div class='widget_ItemChooser' id='%s_mp' >\n"%( tuplet[0].name ) # mp == menuPicker
-					HTML += "    ...</div>\n"
-				
-				
-				elif tupletStyle in [ 'File' , 'Folder' ]:
-					# create the wrapper container for the parameter widget.
-					HTML += "    <div class='widget_ItemChooser' id='%s_fp' >\n"%( tuplet[0].name ) # fp == file/folder picker
-					HTML += "    ...</div>\n"
-				
-				
-				HTML += "  </div>\n"
-				
-				HTML += '</div>\n\n'
 			
-			
-		
 			HTML_FINAL.text = HTML
-			
+				
 		else:
 			HTML_FINAL.text = ''
 	
