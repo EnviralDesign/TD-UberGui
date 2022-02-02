@@ -22,7 +22,7 @@ Both real time performance when many parameters are animated AND the speed in wh
 
 Resting performance is very low, just the cost of the web render TOP. **NOTE:** *You can even disable the "Enable Thread" parameter, when you want to fully shut down the cook times of UG, for example when a certain window is not open, or part of the software not visible.*
 
-![ubergui performance resting](gifs/UGV4_resting-performance.gif)
+![ubergui performance resting](gifs/UGV4_resting_performance.gif)
 
 ### Aesthetic
 Since UberGui is built on html/css we have a massive array of pre existing tech and styling options to leverage to build out compelling UIs. For this tool, I've exposed many of these css styling variables to TD, through a custom parameter styles page. You can modify/expose as many others as you'd like very easily with the parameter injection find/replace method.
@@ -64,7 +64,7 @@ If scrolling or touch interactions are too fast or too slow, you can change the 
 ### Adjusting Values via Sliders
 You can adjust the value of any type of numerical parameter just dragging left and right. The min/max ranges of the parameter will determine the range. Menu parameters can also be treated like a slider.
 
-![ubergui slider adjustment](gifs/UGV4_sliders1-1.gif)
+![ubergui slider adjustment](gifs/UGV4_sliders1.gif)
 
 ---
 
@@ -123,7 +123,7 @@ You can take advantage of the tool-tips overlay, if you include a table DAT in t
 
 This is also where you'd specify special functionality for certain types of parameters in the third and fourth columns.
 
-![ubergui override config](gifs/Uberguiconfigoverride_dat-e1612474638287.png)
+![ubergui override config](gifs/Uberguiconfigoverride_dat.PNG)
 
 ---
 
