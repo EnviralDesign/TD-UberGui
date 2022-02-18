@@ -44,7 +44,17 @@ class UG4:
 			uberGuiOverrideDat = SRC.op('Uberguiconfigoverride')
 			
 			publicPageNames = self.publicLookup.row(1)[0].val.split(',')
-			parTuplets = [ x for x in SRC.customTuplets if x[0].enable == True and x[0].page.name in publicPageNames ]
+			all_pars = SRC.builtinPars + SRC.customPars
+			all_pars = [ x for x in all_pars if x.page != None ]
+			captured_pars = [ x for x in all_pars if x.page.name in publicPageNames ]
+			
+			# old way.
+			# parTuplets = [ x for x in SRC.customTuplets if x[0].enable == True and x[0].page.name in publicPageNames ]
+			parTuplets = self.generate_par_tuple_list(captured_pars)
+			
+
+			# for each in parTuplets:
+			# 	print( [x.name for x in each] )
 			
 			FirstHeader = 1
 			
@@ -255,6 +265,17 @@ class UG4:
 		else:
 			HTML_FINAL.text = ''
 	
+	def generate_par_tuple_list(self, parlist):
+
+		par_tuples = []
+		for par in parlist:
+			if par.vecIndex == 0:
+				par_tuples += [[par]]
+			elif par.vecIndex > 0:
+				par_tuples[-1] += [par]
+		
+		return par_tuples
+
 	
 	def ParseTitle(self,titleStr):
 		'''
