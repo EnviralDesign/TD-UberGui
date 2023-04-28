@@ -2,7 +2,7 @@
 # UberGui V4 ( TD 2021.12380 )
 
 ## Supporting this work
-If you find value in this sort of thing and have the funds, please consider supporting this project and more like it. You can find links on the right.
+If you want to support this project, and others like it please check out my patreon, and github sponsor pages on the right!
 
 <p align="center">
   <img src="gifs/UGV4_header2.gif">
