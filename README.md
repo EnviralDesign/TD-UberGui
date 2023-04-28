@@ -1,6 +1,9 @@
 
 # UberGui V4 ( TD 2021.12380 )
 
+## Supporting this work
+If you find value in this sort of thing and have the funds, please consider supporting this project and more like it. You can find links on the right.
+
 <p align="center">
   <img src="gifs/UGV4_header2.gif">
 </p>
@@ -159,13 +162,3 @@ Parameters that have read only enabled, or who's parameter mode is set to expres
 ![ubergui read only](https://user-images.githubusercontent.com/10091486/116152339-68097200-a6ab-11eb-8a6f-92f7f2e11b1a.png)
 
 Disabled parameters will simply be excluded from the UI all together.
-
-
-
-
-## Support this work
-
-If you find value in this sort of thing, help me dedicating time to making open source code.
-
-[![Donate](gifs/paypal.png)](https://www.paypal.com/donate?hosted_button_id=RP8EJAHSDTZ86)
-[![Donate](gifs/patron2.png)](https://www.patreon.com/EnviralDesign)
